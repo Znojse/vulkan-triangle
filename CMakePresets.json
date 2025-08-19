@@ -1,0 +1,57 @@
+{
+    "version": 9,
+    "cmakeMinimumRequired": {
+        "major": 4,
+        "minor": 1,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "vtDefault",
+            "description": "The default configuration for the vulkan triangle using Ninja Multi-Config generator.",
+            "generator": "Ninja Multi-Config",
+            "binaryDir": "${sourceDir}/build",
+            "toolchainFile": "build/conan_toolchain.cmake",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": { "type": "BOOL",   "value": true },
+                "CMAKE_CONFIGURATION_TYPES":     { "type": "STRING", "value": "Debug;Release" },
+                "CMAKE_CXX_FLAGS_DEBUG":         { "type": "STRING", "value": "-Wall, -Werror" },
+                "CMAKE_CXX_FLAGS_RELEASE":       { "type": "STRING", "value": "-Wall, -Werror" }
+            }
+        }
+    ],
+    "buildPresets": [
+        { "name": "vtDebug",   "configurePreset": "vtDefault", "configuration": "Debug" },
+        { "name": "vtRelease", "configurePreset": "vtDefault", "configuration": "Release" }
+    ],
+    "testPresets": [
+        { "name": "vtDebug",   "configurePreset": "vtDefault", "configuration": "Debug" },
+        { "name": "vtRelease", "configurePreset": "vtDefault", "configuration": "Release" }
+    ],
+    "workflowPresets": [
+        {
+            "name": "vtDebug",
+            "steps": [
+                { "type": "configure", "name": "vtDefault"},
+                { "type": "build",     "name": "vtDebug"}
+            ]
+        },
+        {
+            "name": "vtRelease",
+            "steps": [
+                { "type": "configure", "name": "vtDefault"},
+                { "type": "build",     "name": "vtRelease"}
+            ]
+        },
+        {
+            "name": "vtAll",
+            "steps": [
+                { "type": "configure", "name": "vtDefault"},
+                { "type": "build",     "name": "vtDebug"},
+                { "type": "build",     "name": "vtRelease"},
+                { "type": "test",      "name": "vtDebug"},
+                { "type": "test",      "name": "vtRelease"}
+            ]
+        }
+    ]
+}
