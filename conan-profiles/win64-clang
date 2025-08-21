@@ -1,0 +1,15 @@
+[settings]
+os=Windows
+arch=x86_64
+build_type=Release
+compiler=clang
+compiler.version=18
+compiler.cstd=23
+compiler.cppstd=23
+compiler.runtime=dynamic
+compiler.runtime_type=Release
+compiler.runtime_version=v144
+
+[conf]
+tools.env.virtualenv:powershell=powershell.exe
+tools.cmake.cmaketoolchain:generator=Ninja Multi-Config
