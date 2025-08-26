@@ -1,17 +1,25 @@
 from conan import ConanFile
-from conan.tools.cmake import cmake_layout
-from conan.tools.cmake import CMake, CMakeToolchain, CMakeDeps
+from conan.tools.cmake import CMake, CMakeToolchain, CMakeDeps, cmake_layout
 
-class VulkanTriangleRecipe(ConanFile):
-    name = "Vulkan Triangle"
-    settings = "os", "compiler", "build_type", "arch"
+class VulkanTriangle(ConanFile):
+    name        = "vulkan-triangle"
+    settings    = "os", "compiler", "build_type", "arch"
+    version     = "0.0.1"
+    description = "This is a basic application for rendering a triangle with Vulkan in C++ using Conan and CMake."
+    author      = "Alexander Olsson (alex.olsson.93@gmail.com)"
+    url         = "https://github.com/Znojse/vulkan-triangle"
 
     def requirements(self):
-        pass
+        if self.settings.compiler == "msvc" or self.settings.os == "Linux":
+            self.requires("glfw/3.4")
+        self.requires("glm/1.0.1")
+        self.requires("vulkan-loader/1.4.313.0")
 
     def build_requirements(self):
-        self.requires("ninja/1.13.1")
-        self.requires("mingw-builds/15.1.0")
+        if self.settings.compiler != "msvc":
+            self.requires("ninja/1.13.1")
+            if self.settings.os == "Windows":
+                self.requires("mingw-builds/15.1.0")
         self.requires("catch2/3.9.1")
         self.requires("cmake/[>=3.29]")
 
@@ -19,9 +27,6 @@ class VulkanTriangleRecipe(ConanFile):
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
-        # cmake.test()
-        # self.run("mybuildsystem . --configure")
-        # self.run("mybuildsystem . --build")
 
     def generate(self):
         deps = CMakeDeps(self)
@@ -32,6 +37,3 @@ class VulkanTriangleRecipe(ConanFile):
 
     def layout(self):
         cmake_layout(self)
-
-# Example functions that can be added:
-#   - validate, generate ...
