@@ -1,0 +1,38 @@
+# add_executable(${PROJECT_NAME}_C src/main.c)
+add_executable(window_example window_main.cpp)
+add_executable(vulkan-triangle)
+
+target_sources(vulkan-triangle
+    PRIVATE
+        main.cpp
+        hello_triangle_application.cpp
+)
+
+target_sources(vulkan-triangle
+    PUBLIC
+        FILE_SET HEADERS
+        BASE_DIRS .
+        FILES
+        hello_triangle_application.hpp
+)
+
+target_link_libraries(vulkan-triangle PRIVATE Vulkan::Vulkan glfw glm::glm)
+target_link_libraries(window_example PRIVATE Vulkan::Vulkan glfw glm::glm)
+
+
+
+## TODO
+#  - Learn more about install:
+#    - install(TARGETS <name>
+#      FILE_SET HEADERS
+# )
+#
+# install(RUNTIME_DEPENDENCY_SET lib_deps
+#  # Kolla CMAKE videon 2025...
+# )
+
+
+## Vulkan
+# set(ENV{VULKAN_SDK} "Path/To/Vulkan/Version/Installation")
+# find_package(Vulkan REQUIRED)
+# target_link_libraries(target ${Vulkan_LIBRARIES})
