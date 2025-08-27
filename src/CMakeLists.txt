@@ -1,5 +1,3 @@
-# add_executable(${PROJECT_NAME}_C src/main.c)
-add_executable(window_example window_main.cpp)
 add_executable(vulkan-triangle)
 
 target_sources(vulkan-triangle
@@ -17,8 +15,6 @@ target_sources(vulkan-triangle
 )
 
 target_link_libraries(vulkan-triangle PRIVATE Vulkan::Vulkan glfw glm::glm)
-target_link_libraries(window_example PRIVATE Vulkan::Vulkan glfw glm::glm)
-
 
 
 ## TODO

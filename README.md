@@ -58,3 +58,6 @@ Activate python virtual environment.
 - Install Python3
 - Install Conan
 - Install CMake
+
+# Format
+`clang-format -i src/*.cpp src/*.hpp`

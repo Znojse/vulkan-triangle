@@ -1,8 +1,8 @@
-#include <vulkan/vulkan.h>
+// #include <vulkan/vulkan.h>
 
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
-#include <cstdlib>
 
 #include "hello_triangle_application.hpp"
 
