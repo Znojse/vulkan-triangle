@@ -17,14 +17,14 @@ class VulkanTriangle(ConanFile):
         self.requires("vulkan-loader/1.4.313.0")
 
     def build_requirements(self):
+        self.tool_requires("cmake/[>=3.29]")
         if self.settings.compiler != "msvc":
-            self.requires("ninja/[>=1.13.1]")
+            self.tool_requires("ninja/[>=1.13.1]")
 
             if self.settings.os == "Windows":
-                self.requires("mingw-builds/[>=15.1.0]")
+                self.tool_requires("mingw-builds/[>=15.1.0]")
 
-        self.requires("catch2/[>=3.9.1]")
-        self.requires("cmake/[>=3.29]")
+        self.test_requires("catch2/[>=3.9.1]")
 
     def build(self):
         cmake = CMake(self)
