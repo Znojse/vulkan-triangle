@@ -9,6 +9,8 @@
 int main() {
     vt::triangle::HelloTriangleApplication app;
 
+    std::cout << "Hello Vulkan Triangle!" << std::endl;
+
     try {
         app.run();
     } catch (const std::exception& e) {

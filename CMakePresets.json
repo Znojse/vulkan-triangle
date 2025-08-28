@@ -12,7 +12,7 @@
             "description": "The default configuration for the vulkan triangle using Ninja Multi-Config generator.",
             "inherits": "conan-default",
             "generator": "Ninja Multi-Config",
-            "binaryDir": "${sourceDir}/build/vtDefault",
+            "binaryDir": "${sourceDir}/build/vulkan-triangle",
             "toolchainFile": "${sourceDir}/build/generators/conan_toolchain.cmake",
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": { "type": "BOOL",   "value": true },
@@ -28,7 +28,7 @@
             "description": "The default configuration for the vulkan triangle using Ninja Multi-Config generator.",
             "inherits": "conan-default",
             "generator": "Visual Studio 17 2022",
-            "binaryDir": "${sourceDir}/build/vtMSVC",
+            "binaryDir": "${sourceDir}/build/vulkan-triangle",
             "toolchainFile": "${sourceDir}/build/generators/conan_toolchain.cmake",
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": { "type": "BOOL",   "value": true },

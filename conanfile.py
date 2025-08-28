@@ -11,16 +11,19 @@ class VulkanTriangle(ConanFile):
 
     def requirements(self):
         if self.settings.compiler == "msvc" or self.settings.os == "Linux":
-            self.requires("glfw/3.4")
+            self.requires("glfw/3.4")  # Package is built with MSVC in Windows and does not work with [Windows, mingw] setup.
+
         self.requires("glm/1.0.1")
         self.requires("vulkan-loader/1.4.313.0")
 
     def build_requirements(self):
         if self.settings.compiler != "msvc":
-            self.requires("ninja/1.13.1")
+            self.requires("ninja/[>=1.13.1]")
+
             if self.settings.os == "Windows":
-                self.requires("mingw-builds/15.1.0")
-        self.requires("catch2/3.9.1")
+                self.requires("mingw-builds/[>=15.1.0]")
+
+        self.requires("catch2/[>=3.9.1]")
         self.requires("cmake/[>=3.29]")
 
     def build(self):
@@ -37,3 +40,6 @@ class VulkanTriangle(ConanFile):
 
     def layout(self):
         cmake_layout(self)
+
+    def validate(self):
+        pass

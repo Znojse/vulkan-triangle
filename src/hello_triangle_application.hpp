@@ -11,7 +11,7 @@ class HelloTriangleApplication {
     ~HelloTriangleApplication() noexcept = default;
 
     // Copy constructor and assignment operator.
-    HelloTriangleApplication(const HelloTriangleApplication& other)            = delete;  // This is a comment.
+    HelloTriangleApplication(const HelloTriangleApplication& other)            = delete;
     HelloTriangleApplication& operator=(const HelloTriangleApplication& other) = delete;
 
     // Move constructor and move assignment operator.
@@ -26,11 +26,14 @@ class HelloTriangleApplication {
     }
 
   private:
-    GLFWwindow*               window;
     static constexpr uint32_t kWidth  = 800;
     static constexpr uint32_t kHeight = 600;
 
+    VkInstance  instance;
+    GLFWwindow* window;
+
     void initWindow();
+    void createInstance();
     void initVulkan();
     void mainLoop();
     void cleanup();

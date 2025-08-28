@@ -10,4 +10,3 @@ os=Windows
 
 [conf]
 tools.env.virtualenv:powershell=powershell.exe
-tools.cmake.cmaketoolchain:generator="Visual Studio 17 2022"

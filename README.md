@@ -2,11 +2,7 @@
 Game Engine that will be developed with C++, Vulkan and structured by Conan and CMake
 
 # Compilation
-## Windows
-### conan build Release
-`conan build . --profile:a ./conan-profiles/win64-clang`
-
-### bash
+## bash
 ```bash
 # WSL-Linux
 clear &&
@@ -23,6 +19,16 @@ conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_t
 conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_type=Release . &&
 cmake --workflow --preset=vtMSVCAll
 ```
+
+### Cross-compilation Linux -> Windows (Does not work with Vulkan...)
+```bash
+clear &&
+rm -rf build/* &&
+conan install --profile:b ./conan-profiles/wsl-linux-gcc --profile:h ./conan-profiles/wsl-win64-gcc --build=missing -s build_type=Debug . &&
+conan install --profile:b ./conan-profiles/wsl-linux-gcc --profile:h ./conan-profiles/wsl-win64-gcc --build=missing -s build_type=Release . &&
+cmake --workflow --preset=vtAll
+```
+
 ### Powershell
 ```powershell
 # Windows MSVC
@@ -45,6 +51,7 @@ clear ; if (Test-Path -LiteralPath build/) { Remove-Item build/* -Recurse -Force
 - Conan
 - CMake
 ## Setup WSL Debian
+Need to install mesa-vulkan-drivers on Linux to work.
 ### /etc/wsl.conf
 ```
 [boot]
