@@ -20,3 +20,6 @@ CMakeUserPresets.json
 
 # Conan
 ConanPresets.json
+
+# Debug files
+valgrind-out.txt

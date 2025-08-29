@@ -68,3 +68,8 @@ Activate python virtual environment.
 
 # Format
 `clang-format -i src/*.cpp src/*.hpp`
+
+# Valgrind
+```bash
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt ./build/vulkan-triangle/src/Release/vulkan-triangle
+```
