@@ -1,6 +1,9 @@
 #include <cstdlib>
+#include <format>
+#include <iostream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -31,17 +34,47 @@ void HelloTriangleApplication::createInstance() {
     createInfo.sType            = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pApplicationInfo = &appInfo;
 
-    uint32_t     glfwExtensionCount = 0;
-    const char** glfwExtensions { nullptr };
-
-    glfwExtensions                     = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+    uint32_t     glfwExtensionCount    = 0;
+    const char** glfwExtensions        = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
     createInfo.enabledExtensionCount   = glfwExtensionCount;
     createInfo.ppEnabledExtensionNames = glfwExtensions;
     createInfo.enabledLayerCount       = 0;
 
+    if (!glfwExtensions) {
+        throw std::runtime_error("HelloTriangleApplication::createInstance: Failed to get GLFW required instance extensions.");
+    }
+
+    uint32_t extensionCount = 0;
+    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+    std::vector<VkExtensionProperties> extensions(extensionCount);
+    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
+
+    for (uint32_t i = 0; i < glfwExtensionCount; i++) {
+        auto requiredExt = std::string(glfwExtensions[i]);
+        bool found       = false;
+
+        std::cout << std::format("Comparing required extension [{}] with available extension:", requiredExt) << std::endl;
+        for (uint32_t j = 0; j < extensionCount; j++) {
+            std::string availableExt { extensions[j].extensionName };
+            std::cout << std::format("\t[{}]", availableExt) << std::endl;
+
+            if (requiredExt.compare(std::string(availableExt)) == 0) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            std::cout << "Available extension:" << std::endl;
+            for (const auto& extension : extensions) {
+                std::cout << std::format("\t [{}]", extension.extensionName) << std::endl;
+            }
+            throw std::runtime_error(std::format("HelloTriangleApplication::createInstance: Missing required Vulkanextension: [{}].", requiredExt));
+        }
+    }
+
     if (auto result = vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
-        std::string msg = std::string("HelloTriangleApplication::createInstance: Failed to create instance, ") + std::to_string(result) + std::string(".");
-        throw std::runtime_error(msg.c_str());
+        throw std::runtime_error(std::format("HelloTriangleApplication::createInstance: Failed to create instancewith error code: {}.", result).c_str());
     }
 }
 
@@ -54,6 +87,7 @@ void HelloTriangleApplication::mainLoop() {
 }
 
 void HelloTriangleApplication::cleanup() {
+    vkDestroyInstance(instance, nullptr);
     glfwDestroyWindow(window);
     glfwTerminate();
 }
