@@ -17,10 +17,10 @@
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": { "type": "BOOL",   "value": true },
                 "CMAKE_CONFIGURATION_TYPES":     { "type": "STRING", "value": "Debug;Release" },
-                "CMAKE_C_FLAGS_DEBUG":           { "type": "STRING", "value": "-Wall -Wextra -O2" },
-                "CMAKE_C_FLAGS_RELEASE":         { "type": "STRING", "value": "-Wall -Wextra -O2" },
-                "CMAKE_CXX_FLAGS_DEBUG":         { "type": "STRING", "value": "-Wall -Werror -O2" },
-                "CMAKE_CXX_FLAGS_RELEASE":       { "type": "STRING", "value": "-Wall -Werror -O2" }
+                "CMAKE_C_FLAGS_DEBUG_INIT":      { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion         -O2" },
+                "CMAKE_C_FLAGS_RELEASE_INIT":    { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion         -O2" },
+                "CMAKE_CXX_FLAGS_DEBUG_INIT":    { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion -Werror -O2" },
+                "CMAKE_CXX_FLAGS_RELEASE_INIT":  { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion -Werror -O2" }
             }
         },
         {
@@ -53,28 +53,32 @@
             "name": "vtDebug",
             "steps": [
                 { "type": "configure", "name": "vtDefault" },
-                { "type": "build",     "name": "vtDebug" }
+                { "type": "build",     "name": "vtDebug" },
+                { "type": "test",      "name": "vtDebug" }
             ]
         },
         {
             "name": "vtRelease",
             "steps": [
                 { "type": "configure", "name": "vtDefault" },
-                { "type": "build",     "name": "vtRelease" }
+                { "type": "build",     "name": "vtRelease" },
+                { "type": "test",      "name": "vtRelease" }
             ]
         },
         {
             "name": "vtMSVCDebug",
             "steps": [
                 { "type": "configure", "name": "vtMSVC" },
-                { "type": "build",     "name": "vtMSVCDebug" }
+                { "type": "build",     "name": "vtMSVCDebug" },
+                { "type": "test",      "name": "vtMSVCDebug" }
             ]
         },
         {
             "name": "vtMSVCRelease",
             "steps": [
                 { "type": "configure", "name": "vtMSVC" },
-                { "type": "build",     "name": "vtMSVCRelease" }
+                { "type": "build",     "name": "vtMSVCRelease" },
+                { "type": "test",      "name": "vtMSVCRelease" }
             ]
         },
         {

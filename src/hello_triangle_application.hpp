@@ -1,5 +1,11 @@
 #pragma once
 
+#include <cstdlib>
+#include <memory>
+#include <string>
+#include <tuple>
+#include <vector>
+
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -26,17 +32,32 @@ class HelloTriangleApplication {
     }
 
   private:
-    static constexpr uint32_t kWidth  = 800;
-    static constexpr uint32_t kHeight = 600;
+    const std::string         kClassName = "HelloTriangleApplication";
+    static constexpr uint32_t kWidth     = 800;
+    static constexpr uint32_t kHeight    = 600;
 
-    VkInstance  instance;
-    GLFWwindow* window;
+    const std::vector<const char*> validationLayers = { "VK_LAYER_KHRONOS_validation", "VK_LAYER_LUNARG_monitor" };
 
-    void initWindow();
-    void createInstance();
-    void initVulkan();
-    void mainLoop();
-    void cleanup();
+#ifdef NDEBUG
+    static constexpr bool enableValidationLayers = false;
+#else
+    static constexpr bool enableValidationLayers = true;
+#endif
+
+    VkInstance               instance       = nullptr;
+    VkDebugUtilsMessengerEXT debugMessenger = nullptr;
+    GLFWwindow*              window         = nullptr;
+
+    void                                                initWindow();
+    void                                                initVulkan();
+    void                                                mainLoop();
+    void                                                cleanup();
+    void                                                createInstance();
+    std::shared_ptr<VkDebugUtilsMessengerCreateInfoEXT> populateDebugMessengerCreateInfo();
+    void                                                setupDebugMessenger();
+    std::vector<const char*>                            getRequiredExtensions();
+    std::tuple<bool, std::string>                       checkValidationLayerSupport();
+    std::tuple<bool, std::string>                       checkRequiredExtensionSupport(const std::vector<const char*>& required_extensions);
 };
 
 }  // namespace vt::triangle

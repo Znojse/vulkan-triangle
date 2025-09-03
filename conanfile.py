@@ -14,7 +14,9 @@ class VulkanTriangle(ConanFile):
             self.requires("glfw/3.4")  # Package is built with MSVC in Windows and does not work with [Windows, mingw] setup.
 
         self.requires("glm/1.0.1")
-        self.requires("vulkan-loader/1.4.313.0")
+
+        # Requires Vulkan SDK installed build environment.
+        # self.requires("vulkan-loader/1.4.313.0")
 
     def build_requirements(self):
         self.tool_requires("cmake/[>=3.29]")

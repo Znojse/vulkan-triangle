@@ -53,6 +53,8 @@ clear ; if (Test-Path -LiteralPath build/) { Remove-Item build/* -Recurse -Force
 ## Setup WSL Debian
 Need to install mesa-vulkan-drivers on Linux to work.
 ### /etc/wsl.conf
+### Vulkan Layers
+source ~/vulkan/1.4.321.1/setup-env.sh
 ```
 [boot]
 systemd=true

@@ -1,5 +1,3 @@
-// #include <vulkan/vulkan.h>
-
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
