@@ -5,7 +5,6 @@
 #include <print>
 #include <stdexcept>
 #include <string>
-#include <tuple>
 #include <vector>
 
 #define GLFW_INCLUDE_VULKAN
@@ -82,11 +81,6 @@ void HelloTriangleApplication::cleanup() {
 }
 
 void HelloTriangleApplication::createInstance() {
-    const auto& [layerSupported, missingLayer] = checkValidationLayerSupport();
-    if (enableValidationLayers && !layerSupported) {
-        throw std::runtime_error(std::format("{}::createInstance: Missing required layer [{}].", kClassName, missingLayer));
-    }
-
     // AppInfo initializaton.
     VkApplicationInfo appInfo = { .sType              = VK_STRUCTURE_TYPE_APPLICATION_INFO,
                                   .pNext              = nullptr,
@@ -97,11 +91,9 @@ void HelloTriangleApplication::createInstance() {
                                   .apiVersion         = VK_API_VERSION_1_0 };
 
     // CreateInfo initialization and extensions.
-    const auto& extensions                 = getRequiredExtensions();
-    const auto& [extSupported, missingExt] = checkRequiredExtensionSupport(extensions);
-    if (!extSupported) {
-        throw std::runtime_error(std::format("{}::checkRequiredExtensionSupport: Missing required extension: [{}].", kClassName, missingExt));
-    }
+    const auto& extensions = getRequiredExtensions();
+    checkExtensionSupport(extensions);
+
     VkInstanceCreateInfo createInfo = { .sType                   = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
                                         .pNext                   = nullptr,
                                         .flags                   = {},
@@ -114,6 +106,8 @@ void HelloTriangleApplication::createInstance() {
     // Validation layers and debug if enabled.
     std::shared_ptr<VkDebugUtilsMessengerCreateInfoEXT> debugCreateInfo = { nullptr };
     if (enableValidationLayers) {
+        checkValidationLayerSupport();
+
         createInfo.enabledLayerCount   = static_cast<uint32_t>(validationLayers.size());
         createInfo.ppEnabledLayerNames = validationLayers.data();
 
@@ -171,66 +165,50 @@ std::vector<const char*> HelloTriangleApplication::getRequiredExtensions() {
     return extensions;
 }
 
-std::tuple<bool, std::string> HelloTriangleApplication::checkRequiredExtensionSupport(const std::vector<const char*>& required_extensions) {
-    uint32_t extensionCount = 0;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-    std::vector<VkExtensionProperties> extensions(extensionCount);
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
+void HelloTriangleApplication::checkExtensionSupport(const std::vector<const char*>& extensions) {
+    uint32_t availableCount { 0 };
+    vkEnumerateInstanceExtensionProperties(nullptr, &availableCount, nullptr);
 
-    // std::cout << "Available extension:" << std::endl;
-    // for (const auto& extension : extensions) {
-    //     std::cout << std::format("\t [{}]", extension.extensionName) << std::endl;
-    // }
+    std::vector<VkExtensionProperties> availableExtensions(availableCount);
+    vkEnumerateInstanceExtensionProperties(nullptr, &availableCount, availableExtensions.data());
 
-    for (uint32_t i = 0; i < required_extensions.size(); i++) {
-        auto requiredExt { std::string(required_extensions[i]) };
+    for (std::string extensionName : extensions) {
         bool found { false };
 
-        for (uint32_t j = 0; j < extensionCount; j++) {
-            std::string availableExt { extensions[j].extensionName };
-
-            if (requiredExt.compare(availableExt) == 0) {
+        for (auto& availableExtensions : availableExtensions) {
+            if (extensionName.compare(availableExtensions.extensionName) == 0) {
                 found = true;
                 break;
             }
         }
 
         if (!found) {
-            return { false, requiredExt };
+            throw std::runtime_error(std::format("{}::checkExtensionSupport: Missing required extension: [{}].", kClassName, extensionName));
         }
     }
-
-    return { true, "" };
 }
 
-std::tuple<bool, std::string> HelloTriangleApplication::checkValidationLayerSupport() {
-    uint32_t layerCount { 0 };
-    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+void HelloTriangleApplication::checkValidationLayerSupport() {
+    uint32_t availableCount { 0 };
+    vkEnumerateInstanceLayerProperties(&availableCount, nullptr);
 
-    std::vector<VkLayerProperties> availableLayers(layerCount);
-    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-
-    // std::cout << "Available layers:" << std::endl;
-    // for (const auto& layer : availableLayers) {
-    //     std::cout << std::format("\t [{}]", layer.layerName) << std::endl;
-    // }
+    std::vector<VkLayerProperties> availableLayers(availableCount);
+    vkEnumerateInstanceLayerProperties(&availableCount, availableLayers.data());
 
     for (std::string layerName : validationLayers) {
         bool found { false };
 
-        for (auto& layerProperties : availableLayers) {
-            if (layerName.compare(layerProperties.layerName) == 0) {
+        for (auto& availableLayer : availableLayers) {
+            if (layerName.compare(availableLayer.layerName) == 0) {
                 found = true;
                 break;
             }
         }
 
         if (!found) {
-            return { false, layerName };
+            throw std::runtime_error(std::format("{}::createInstance: Missing required layer [{}].", kClassName, layerName));
         }
     }
-
-    return { true, "" };
 }
 
 }  // namespace vt::triangle

@@ -3,7 +3,6 @@
 #include <cstdlib>
 #include <memory>
 #include <string>
-#include <tuple>
 #include <vector>
 
 #define GLFW_INCLUDE_VULKAN
@@ -56,8 +55,8 @@ class HelloTriangleApplication {
     std::shared_ptr<VkDebugUtilsMessengerCreateInfoEXT> populateDebugMessengerCreateInfo();
     void                                                setupDebugMessenger();
     std::vector<const char*>                            getRequiredExtensions();
-    std::tuple<bool, std::string>                       checkValidationLayerSupport();
-    std::tuple<bool, std::string>                       checkRequiredExtensionSupport(const std::vector<const char*>& required_extensions);
+    void                                                checkValidationLayerSupport();
+    void                                                checkExtensionSupport(const std::vector<const char*>& extension);
 };
 
 }  // namespace vt::triangle
