@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -31,6 +32,12 @@ class HelloTriangleApplication {
     }
 
   private:
+    struct QueueFamilyIndices {
+        std::optional<uint32_t> graphicsFamily;
+
+        bool isComplete() { return graphicsFamily.has_value(); }
+    };
+
     const std::string         kClassName = "HelloTriangleApplication";
     static constexpr uint32_t kWidth     = 800;
     static constexpr uint32_t kHeight    = 600;
@@ -43,20 +50,31 @@ class HelloTriangleApplication {
     static constexpr bool enableValidationLayers = true;
 #endif
 
-    VkInstance               instance       = nullptr;
-    VkDebugUtilsMessengerEXT debugMessenger = nullptr;
-    GLFWwindow*              window         = nullptr;
+    VkInstance               instance       = VK_NULL_HANDLE;
+    VkDebugUtilsMessengerEXT debugMessenger = VK_NULL_HANDLE;
+    GLFWwindow*              window         = VK_NULL_HANDLE;
+    VkPhysicalDevice         physicalDevice = VK_NULL_HANDLE;
+    VkDevice                 device         = VK_NULL_HANDLE;
+    VkQueue                  graphicsQueue  = VK_NULL_HANDLE;
 
-    void                                                initWindow();
-    void                                                initVulkan();
-    void                                                mainLoop();
-    void                                                cleanup();
-    void                                                createInstance();
-    std::shared_ptr<VkDebugUtilsMessengerCreateInfoEXT> populateDebugMessengerCreateInfo();
+    void initWindow();
+    void initVulkan();
+    void mainLoop();
+    void cleanup();
+
+    void                     createInstance();
+    std::vector<const char*> getRequiredExtensions();
+    void                     checkValidationLayerSupport();
+    void                     checkExtensionSupport(const std::vector<const char*>& extension);
+
     void                                                setupDebugMessenger();
-    std::vector<const char*>                            getRequiredExtensions();
-    void                                                checkValidationLayerSupport();
-    void                                                checkExtensionSupport(const std::vector<const char*>& extension);
+    std::shared_ptr<VkDebugUtilsMessengerCreateInfoEXT> populateDebugMessengerCreateInfo();
+
+    void               pickPhysicalDevice();
+    int32_t            rateDeviceSuitability(VkPhysicalDevice device);
+    QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+
+    void createLogicalDevice();
 };
 
 }  // namespace vt::triangle
