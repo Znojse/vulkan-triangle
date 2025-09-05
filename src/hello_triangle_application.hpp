@@ -67,9 +67,10 @@ class HelloTriangleApplication {
     VkQueue                  presentQueue         = VK_NULL_HANDLE;
     VkSurfaceKHR             surface              = VK_NULL_HANDLE;
     VkSwapchainKHR           swapChain            = VK_NULL_HANDLE;
-    std::vector<VkImage>     swapChainImages      = {};
     VkFormat                 swapChainImageFormat = {};
     VkExtent2D               swapChainExtent      = {};
+    std::vector<VkImage>     swapChainImages      = {};
+    std::vector<VkImageView> swapChainImageViews  = {};
 
     void initWindow();
     void initVulkan();
@@ -91,6 +92,7 @@ class HelloTriangleApplication {
     SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 
     void               createSwapchain();
+    void               createImageViews();
     VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
     VkPresentModeKHR   chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
     VkExtent2D         chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
