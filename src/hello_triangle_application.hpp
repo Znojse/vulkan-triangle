@@ -34,8 +34,9 @@ class HelloTriangleApplication {
   private:
     struct QueueFamilyIndices {
         std::optional<uint32_t> graphicsFamily;
+        std::optional<uint32_t> presentFamily;
 
-        bool isComplete() { return graphicsFamily.has_value(); }
+        bool isComplete() { return graphicsFamily.has_value() && presentFamily.has_value(); }
     };
 
     const std::string         kClassName = "HelloTriangleApplication";
@@ -56,6 +57,8 @@ class HelloTriangleApplication {
     VkPhysicalDevice         physicalDevice = VK_NULL_HANDLE;
     VkDevice                 device         = VK_NULL_HANDLE;
     VkQueue                  graphicsQueue  = VK_NULL_HANDLE;
+    VkQueue                  presentQueue   = VK_NULL_HANDLE;
+    VkSurfaceKHR             surface        = VK_NULL_HANDLE;
 
     void initWindow();
     void initVulkan();
@@ -66,6 +69,8 @@ class HelloTriangleApplication {
     std::vector<const char*> getRequiredExtensions();
     void                     checkValidationLayerSupport();
     void                     checkExtensionSupport(const std::vector<const char*>& extension);
+
+    void createSurface();
 
     void                                                setupDebugMessenger();
     std::shared_ptr<VkDebugUtilsMessengerCreateInfoEXT> populateDebugMessengerCreateInfo();
