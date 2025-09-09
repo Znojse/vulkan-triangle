@@ -16,6 +16,11 @@ target_sources(vulkan-triangle
 
 target_link_libraries(vulkan-triangle PRIVATE Vulkan::Vulkan glfw glm::glm)
 
+# Include the shader compilation module.
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/shaders/cmake")
+include(CompileShaders)
+add_shaders(vulkan-triangle-shaders shaders/triangle.vert shaders/triangle.frag)
+
 
 ## TODO
 #  - Learn more about install:
