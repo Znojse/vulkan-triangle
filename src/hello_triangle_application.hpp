@@ -58,19 +58,23 @@ class HelloTriangleApplication {
     static constexpr bool enableValidationLayers = true;
 #endif
 
-    VkInstance               instance             = VK_NULL_HANDLE;
-    VkDebugUtilsMessengerEXT debugMessenger       = VK_NULL_HANDLE;
-    GLFWwindow*              window               = VK_NULL_HANDLE;
-    VkPhysicalDevice         physicalDevice       = VK_NULL_HANDLE;
-    VkDevice                 device               = VK_NULL_HANDLE;
-    VkQueue                  graphicsQueue        = VK_NULL_HANDLE;
-    VkQueue                  presentQueue         = VK_NULL_HANDLE;
-    VkSurfaceKHR             surface              = VK_NULL_HANDLE;
-    VkSwapchainKHR           swapChain            = VK_NULL_HANDLE;
-    VkFormat                 swapChainImageFormat = {};
-    VkExtent2D               swapChainExtent      = {};
-    std::vector<VkImage>     swapChainImages      = {};
-    std::vector<VkImageView> swapChainImageViews  = {};
+    VkInstance                 instance              = VK_NULL_HANDLE;
+    VkDebugUtilsMessengerEXT   debugMessenger        = VK_NULL_HANDLE;
+    GLFWwindow*                window                = VK_NULL_HANDLE;
+    VkPhysicalDevice           physicalDevice        = VK_NULL_HANDLE;
+    VkDevice                   device                = VK_NULL_HANDLE;
+    VkQueue                    graphicsQueue         = VK_NULL_HANDLE;
+    VkQueue                    presentQueue          = VK_NULL_HANDLE;
+    VkSurfaceKHR               surface               = VK_NULL_HANDLE;
+    VkSwapchainKHR             swapChain             = VK_NULL_HANDLE;
+    VkFormat                   swapChainImageFormat  = {};
+    VkExtent2D                 swapChainExtent       = {};
+    std::vector<VkImage>       swapChainImages       = {};
+    std::vector<VkImageView>   swapChainImageViews   = {};
+    VkRenderPass               renderPass            = {};
+    VkPipelineLayout           pipelineLayout        = {};
+    VkPipeline                 graphicsPipeline      = {};
+    std::vector<VkFramebuffer> swapChainFramebuffers = {};
 
     void initWindow();
     void initVulkan();
@@ -96,6 +100,11 @@ class HelloTriangleApplication {
     VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
     VkPresentModeKHR   chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
     VkExtent2D         chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+
+    void           createRenderPass();
+    void           createGraphicsPipeline();
+    VkShaderModule createShaderModule(const std::vector<char>& code);
+    void           createFramebuffers();
 
     void checkExtensionSupport(const std::vector<const char*>& extension);
     bool checkDeviceExtensionSupport(VkPhysicalDevice device);
