@@ -75,6 +75,8 @@ class HelloTriangleApplication {
     VkPipelineLayout           pipelineLayout        = {};
     VkPipeline                 graphicsPipeline      = {};
     std::vector<VkFramebuffer> swapChainFramebuffers = {};
+    VkCommandPool              commandPool           = {};
+    VkCommandBuffer            commandBuffer         = {};
 
     void initWindow();
     void initVulkan();
@@ -104,7 +106,11 @@ class HelloTriangleApplication {
     void           createRenderPass();
     void           createGraphicsPipeline();
     VkShaderModule createShaderModule(const std::vector<char>& code);
-    void           createFramebuffers();
+
+    void createFramebuffers();
+    void createCommandPool();
+    void createCommandBuffers();
+    void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
     void checkExtensionSupport(const std::vector<const char*>& extension);
     bool checkDeviceExtensionSupport(VkPhysicalDevice device);
