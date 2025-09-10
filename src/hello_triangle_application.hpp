@@ -58,6 +58,10 @@ class HelloTriangleApplication {
     static constexpr bool enableValidationLayers = true;
 #endif
 
+    VkSemaphore imageAvailableSemaphore = {};
+    VkSemaphore renderFinishedSemaphore = {};
+    VkFence     inFlightFence           = {};
+
     VkInstance                 instance              = VK_NULL_HANDLE;
     VkDebugUtilsMessengerEXT   debugMessenger        = VK_NULL_HANDLE;
     GLFWwindow*                window                = VK_NULL_HANDLE;
@@ -81,6 +85,7 @@ class HelloTriangleApplication {
     void initWindow();
     void initVulkan();
     void mainLoop();
+    void drawFrame();
     void cleanup();
 
     void                     createInstance();
@@ -112,6 +117,7 @@ class HelloTriangleApplication {
     void createCommandBuffers();
     void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
+    void createSyncObjects();
     void checkExtensionSupport(const std::vector<const char*>& extension);
     bool checkDeviceExtensionSupport(VkPhysicalDevice device);
     void checkValidationLayerSupport();
