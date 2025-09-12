@@ -104,7 +104,7 @@ void HelloTriangleApplication::mainLoop() {
         drawFrame();
     }
 
-        vkDeviceWaitIdle(device);
+    vkDeviceWaitIdle(device);
 }
 
 void HelloTriangleApplication::drawFrame() {
@@ -119,14 +119,14 @@ void HelloTriangleApplication::drawFrame() {
 
     uint32_t imageIndex = { 0 };
     vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
-    vkResetCommandBuffer(commandBuffer, 0);
+    vkResetCommandBuffer(commandBuffer, /*VkCommandBufferResetFlagBits*/ 0);
     recordCommandBuffer(commandBuffer, imageIndex);
 
     // Each entry in the waitStages array corresponds to the semaphore with the same index in pWaitSemaphores.
     VkSemaphore          waitSemaphores[]   = { imageAvailableSemaphore };
     VkSemaphore          signalSemaphores[] = { renderFinishedSemaphore };
     VkPipelineStageFlags waitStages[]       = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
-    VkSubmitInfo         submitInfo         = { .sType                = {},
+    VkSubmitInfo         submitInfo         = { .sType                = VK_STRUCTURE_TYPE_SUBMIT_INFO,
                                                 .pNext                = nullptr,
                                                 .waitSemaphoreCount   = 1,
                                                 .pWaitSemaphores      = waitSemaphores,
@@ -158,8 +158,8 @@ void HelloTriangleApplication::drawFrame() {
 }
 
 void HelloTriangleApplication::cleanup() {
-    vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
     vkDestroySemaphore(device, renderFinishedSemaphore, nullptr);
+    vkDestroySemaphore(device, imageAvailableSemaphore, nullptr);
     vkDestroyFence(device, inFlightFence, nullptr);
 
     vkDestroyCommandPool(device, commandPool, nullptr);
@@ -680,7 +680,7 @@ void HelloTriangleApplication::createGraphicsPipeline() {
         .pNext                  = nullptr,
         .flags                  = {},
         .topology               = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
-        .primitiveRestartEnable = VK_TRUE
+        .primitiveRestartEnable = VK_FALSE
     };
 
     // VkViewport viewport {
@@ -889,7 +889,7 @@ void HelloTriangleApplication::recordCommandBuffer(VkCommandBuffer commandBuffer
     VkCommandBufferBeginInfo beginInfo = {
         .sType            = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
         .pNext            = nullptr,
-        .flags            = 0,       // Optional
+        .flags            = {},      // Optional
         .pInheritanceInfo = nullptr  // Optional
     };
 
@@ -898,7 +898,7 @@ void HelloTriangleApplication::recordCommandBuffer(VkCommandBuffer commandBuffer
     }
 
     // clang-format off
-    VkClearValue          clearColor     = { { { 0.0f, 0.0f, 1.0f } } };
+    VkClearValue          clearColor     = { { { 0.0f, 0.0f, 0.0f, 1.0f } } };
     VkRenderPassBeginInfo renderPassInfo = {
         .sType           = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
         .pNext           = nullptr,
