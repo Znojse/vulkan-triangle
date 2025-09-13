@@ -66,7 +66,7 @@ static std::vector<char> readFile(const std::string& filename) {
     std::vector<char> buffer(fileSize);
 
     file.seekg(0);
-    file.read(buffer.data(), fileSize);
+    file.read(buffer.data(), static_cast<uint32_t>(fileSize));
     file.close();
 
     return buffer;
@@ -404,7 +404,7 @@ HelloTriangleApplication::QueueFamilyIndices HelloTriangleApplication::findQueue
     std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
 
-    int16_t i = 0;
+    uint32_t i = 0;
     for (const auto& qFamily : queueFamilies) {
         VkBool32 presentSupport = false;
         vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
