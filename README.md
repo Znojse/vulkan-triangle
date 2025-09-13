@@ -60,27 +60,43 @@ The projects assumes that the [Vulkan SDK](https://www.lunarg.com/vulkan-sdk/) i
 
 ## Setup Environment
 ### Linux
-**WIP**
-- Python3
-    - Pip
-    - Venv
-- Conan
-- CMake
-#### Setup WSL Debian
-Need to install mesa-vulkan-drivers on Linux to work.
-#### /etc/wsl.conf
-#### Vulkan Layers
-source ~/vulkan/1.4.321.1/setup-env.sh
-```
-[boot]
-systemd=true
-
-[automount]
-options = "metadata"
-```
-Activate python virtual environment.
+1. Download and extract the Vulkan SDK:
+    1. Download the `tar.xz` for Linux from [LunarG](https://www.lunarg.com/vulkan-sdk/).
+    2. Create a vulkan folder in the home directory:
+        * `mkdir ~/vulkan`.
+    3. Extract the `tar.xz` into the vulkan directory:
+        1. `sudo apt install xz-utils`
+        2. `sudo tar -xvf <path>/vulkansdk-linux-x86_64-<1.x.yy.z>.tar.xz -C ~/vulkan`
+2. [Setup](https://vulkan.lunarg.com/doc/sdk/1.4.321.1/linux/getting_started.html) Vulkan environment variables:
+    * Source the vulkan `setup-env` to the current shell, or into e.g. the `.profile` file for every session.
+        * `source ~/vulkan/1.x.yy.z/setup-env.sh`
+    * Alternatively setup the paths by setting these environment variables manually:
+        * `export VULKAN_SDK=~/vulkan/1.x.yy.z/x86_64`
+        `export PATH=$VULKAN_SDK/bin:$PATH`
+        `export LD_LIBRARY_PATH=$VULKAN_SDK/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}`
+        `export VK_ADD_LAYER_PATH=$VULKAN_SDK/share/vulkan/explicit_layer.d`
+1. Update and install project dependencies:
+    1. `sudo apt update`
+    2. `sudo apt upgrade`
+    3. `sudo apt install pkg-config`
+    4. `sudo apt install cmake`
+    5. `sudo apt install mesa-vulkan-drivers`
+    6. `sudo apt install clang`
+1. Install Python3:
+    1. `sudo apt install python3`
+    2. `sudo apt install python-is-python3`
+    3. `sudo apt install python3.13-venv`
+2. Activate the Python virtual environment:
+    1. `python -m venv <path>/.venv`
+    2. `source <path>/.venv/bin/activate`
+4. Install dependencies within `.venv`:
+    1. `python -m pip install --upgrade pip`
+    1. `pip install conan`
 
 ### Windows
+1. Download and install the Vulkan SDK installer from [LunarG](https://www.lunarg.com/vulkan-sdk/).
+2. Run the installer and follow its instructions.
+
 **WIP**
 - Install Python3
 - Install Conan
