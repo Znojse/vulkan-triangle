@@ -17,9 +17,9 @@
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": { "type": "BOOL",   "value": true },
                 "CMAKE_CONFIGURATION_TYPES":     { "type": "STRING", "value": "Debug;Release" },
-                "CMAKE_C_FLAGS_DEBUG_INIT":      { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion         -O2" },
+                "CMAKE_C_FLAGS_DEBUG_INIT":      { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion         -Od" },
                 "CMAKE_C_FLAGS_RELEASE_INIT":    { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion         -O2" },
-                "CMAKE_CXX_FLAGS_DEBUG_INIT":    { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion -Werror -O2" },
+                "CMAKE_CXX_FLAGS_DEBUG_INIT":    { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion -Werror -Od" },
                 "CMAKE_CXX_FLAGS_RELEASE_INIT":  { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion -Werror -O2" }
             }
         },
@@ -32,7 +32,12 @@
             "toolchainFile": "${sourceDir}/build/generators/conan_toolchain.cmake",
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": { "type": "BOOL",   "value": true },
-                "CMAKE_CONFIGURATION_TYPES":     { "type": "STRING", "value": "Debug;Release" }
+                "CMAKE_CONFIGURATION_TYPES":     { "type": "STRING", "value": "Debug;Release" },
+                "CMAKE_C_FLAGS_DEBUG_INIT":      { "type": "STRING", "value": "/W4 /WX /Od" },
+                "CMAKE_C_FLAGS_RELEASE_INIT":    { "type": "STRING", "value": "/W4 /WX /O2" },
+                "CMAKE_CXX_FLAGS_DEBUG_INIT":    { "type": "STRING", "value": "/W4 /WX /Od" },
+                "CMAKE_CXX_FLAGS_RELEASE_INIT":  { "type": "STRING", "value": "/W4 /WX /O2" }
+
             }
         }
     ],

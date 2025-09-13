@@ -294,9 +294,9 @@ void HelloTriangleApplication::pickPhysicalDevice() {
     // Use an ordered map to automatically sort candidates by increasing score.
     std::multimap<int32_t, VkPhysicalDevice> candidates;
 
-    for (const auto& device : devices) {
-        int32_t score = rateDeviceSuitability(device);
-        candidates.insert(std::make_pair(score, device));
+    for (const auto& _device : devices) {
+        int32_t score = rateDeviceSuitability(_device);
+        candidates.insert(std::make_pair(score, _device));
     }
 
     if (candidates.rbegin()->first > 0) {
@@ -357,12 +357,12 @@ void HelloTriangleApplication::createLogicalDevice() {
     vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
 }
 
-int32_t HelloTriangleApplication::rateDeviceSuitability(VkPhysicalDevice device) {
+int32_t HelloTriangleApplication::rateDeviceSuitability(VkPhysicalDevice _device) {
     int32_t score = 0;
 
-    QueueFamilyIndices      indices             = findQueueFamilies(device);
-    const bool              extensionSupported  = checkDeviceExtensionSupport(device);
-    SwapChainSupportDetails swapChainSupport    = querySwapChainSupport(device);
+    QueueFamilyIndices      indices             = findQueueFamilies(_device);
+    const bool              extensionSupported  = checkDeviceExtensionSupport(_device);
+    SwapChainSupportDetails swapChainSupport    = querySwapChainSupport(_device);
     bool                    isSwapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
 
     // Device is not supported, return a score of 0.
@@ -376,8 +376,8 @@ int32_t HelloTriangleApplication::rateDeviceSuitability(VkPhysicalDevice device)
     // Properties and features.
     VkPhysicalDeviceProperties deviceProperties = {};
     VkPhysicalDeviceFeatures   deviceFeatures   = {};
-    vkGetPhysicalDeviceProperties(device, &deviceProperties);
-    vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+    vkGetPhysicalDeviceProperties(_device, &deviceProperties);
+    vkGetPhysicalDeviceFeatures(_device, &deviceFeatures);
 
     // Discrete GPUs have a significant performance advantage.
     if (VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU == deviceProperties.deviceType) {
@@ -396,18 +396,18 @@ int32_t HelloTriangleApplication::rateDeviceSuitability(VkPhysicalDevice device)
     return score;
 }
 
-HelloTriangleApplication::QueueFamilyIndices HelloTriangleApplication::findQueueFamilies(VkPhysicalDevice device) {
+HelloTriangleApplication::QueueFamilyIndices HelloTriangleApplication::findQueueFamilies(VkPhysicalDevice _device) {
     QueueFamilyIndices indices          = {};
     uint32_t           queueFamilyCount = { 0 };
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+    vkGetPhysicalDeviceQueueFamilyProperties(_device, &queueFamilyCount, nullptr);
 
     std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+    vkGetPhysicalDeviceQueueFamilyProperties(_device, &queueFamilyCount, queueFamilies.data());
 
     uint32_t i = 0;
     for (const auto& qFamily : queueFamilies) {
         VkBool32 presentSupport = false;
-        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
+        vkGetPhysicalDeviceSurfaceSupportKHR(_device, i, surface, &presentSupport);
 
         if (presentSupport) {
             indices.presentFamily = i;
@@ -428,28 +428,28 @@ HelloTriangleApplication::QueueFamilyIndices HelloTriangleApplication::findQueue
     return indices;
 }
 
-HelloTriangleApplication::SwapChainSupportDetails HelloTriangleApplication::querySwapChainSupport(VkPhysicalDevice device) {
+HelloTriangleApplication::SwapChainSupportDetails HelloTriangleApplication::querySwapChainSupport(VkPhysicalDevice _device) {
     SwapChainSupportDetails details = {};
 
     // Basic surface capabilities (min/max number of images in swap chain, min/max width and height of images)
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(_device, surface, &details.capabilities);
 
     // Surface formats (pixel format, color space)
     uint32_t formatCount = { 0 };
-    vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
+    vkGetPhysicalDeviceSurfaceFormatsKHR(_device, surface, &formatCount, nullptr);
 
     if (0 != formatCount) {
         details.formats.resize(formatCount);
-        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, details.formats.data());
+        vkGetPhysicalDeviceSurfaceFormatsKHR(_device, surface, &formatCount, details.formats.data());
     }
 
     // Available presentation modes
     uint32_t presentModeCount = { 0 };
-    vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, nullptr);
+    vkGetPhysicalDeviceSurfacePresentModesKHR(_device, surface, &presentModeCount, nullptr);
 
     if (0 != presentModeCount) {
         details.presentModes.resize(presentModeCount);
-        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, details.presentModes.data());
+        vkGetPhysicalDeviceSurfacePresentModesKHR(_device, surface, &presentModeCount, details.presentModes.data());
     }
 
     return details;
@@ -885,7 +885,7 @@ void HelloTriangleApplication::createCommandBuffers() {
     }
 }
 
-void HelloTriangleApplication::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+void HelloTriangleApplication::recordCommandBuffer(VkCommandBuffer _commandBuffer, uint32_t imageIndex) {
     VkCommandBufferBeginInfo beginInfo = {
         .sType            = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
         .pNext            = nullptr,
@@ -893,7 +893,7 @@ void HelloTriangleApplication::recordCommandBuffer(VkCommandBuffer commandBuffer
         .pInheritanceInfo = nullptr  // Optional
     };
 
-    if (const auto& result = vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
+    if (const auto& result = vkBeginCommandBuffer(_commandBuffer, &beginInfo) != VK_SUCCESS) {
         throw std::runtime_error(std::format("{}::recordCommandBuffer: Failed to begin recording command buffer, error code: {}.", kClassName, result));
     }
 
@@ -912,8 +912,8 @@ void HelloTriangleApplication::recordCommandBuffer(VkCommandBuffer commandBuffer
         .pClearValues    = &clearColor };
     // clang-format on
 
-    vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+    vkCmdBeginRenderPass(_commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+    vkCmdBindPipeline(_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
     // clang-format off
     VkViewport viewport {
@@ -924,19 +924,19 @@ void HelloTriangleApplication::recordCommandBuffer(VkCommandBuffer commandBuffer
         .minDepth = 0.0f,
         .maxDepth = 1.0f
     };
-    vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+    vkCmdSetViewport(_commandBuffer, 0, 1, &viewport);
 
     VkRect2D scissor = {
         .offset = {0, 0},
         .extent = swapChainExtent
     };
-    vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+    vkCmdSetScissor(_commandBuffer, 0, 1, &scissor);
     // clang-format on
 
-    vkCmdDraw(commandBuffer, 3, 1, 0, 0);
-    vkCmdEndRenderPass(commandBuffer);
+    vkCmdDraw(_commandBuffer, 3, 1, 0, 0);
+    vkCmdEndRenderPass(_commandBuffer);
 
-    if (const auto& result = vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
+    if (const auto& result = vkEndCommandBuffer(_commandBuffer) != VK_SUCCESS) {
         throw std::runtime_error(std::format("{}::recordCommandBuffer: Failed to end command buffer, error code: {}.", kClassName, result));
     }
 }
@@ -964,8 +964,8 @@ void HelloTriangleApplication::checkExtensionSupport(const std::vector<const cha
     for (std::string extensionName : extensions) {
         bool found { false };
 
-        for (auto& availableExtensions : availableExtensions) {
-            if (0 == extensionName.compare(availableExtensions.extensionName)) {
+        for (auto& availableExtension : availableExtensions) {
+            if (0 == extensionName.compare(availableExtension.extensionName)) {
                 found = true;
                 break;
             }
@@ -977,12 +977,12 @@ void HelloTriangleApplication::checkExtensionSupport(const std::vector<const cha
     }
 }
 
-bool HelloTriangleApplication::checkDeviceExtensionSupport(VkPhysicalDevice device) {
+bool HelloTriangleApplication::checkDeviceExtensionSupport(VkPhysicalDevice _device) {
     uint32_t extensionCount = { 0 };
-    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+    vkEnumerateDeviceExtensionProperties(_device, nullptr, &extensionCount, nullptr);
 
     std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+    vkEnumerateDeviceExtensionProperties(_device, nullptr, &extensionCount, availableExtensions.data());
 
     std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
     for (const auto& extension : availableExtensions) {
