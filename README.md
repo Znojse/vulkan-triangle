@@ -105,7 +105,7 @@ The projects assumes that the [Vulkan SDK](https://www.lunarg.com/vulkan-sdk/) i
         * `python -m venv <path>/.venv`
     2. Activate the Python virtual environment:
         * Powershell: `<path>/.venv/Scripts/Activate.ps1`
-        * Bash: `<path>/.venv/Scripts/activate`
+        * Bash: `source <path>/.venv/Scripts/activate`
 4. Install dependencies within `.venv`:
     1. `python -m pip install --upgrade pip`
     2. `pip install conan`
