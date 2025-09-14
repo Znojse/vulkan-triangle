@@ -13,8 +13,8 @@
         1. [Compile Examples](#compile-examples)
             1. [Bash](#bash)
             2. [Powershell](#powershell)
-4. [Run](#run)
-5. [Development](#development)
+        2. [Run Examples](#run-examples)
+4. [Development](#development)
     1. [Formatting](#formatting)
     2. [Debugging](#debugging)
         1. [Valgrind](#valgrind)
@@ -174,7 +174,7 @@ conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_t
 cmake --workflow --preset=vtMSVCAll
 ```
 
-# Run
+### Run Examples
 ```bash
 # Linux
 ./build/vulkan-triangle/src/Debug/vulkan-triangle
@@ -203,7 +203,7 @@ Valgrind is an instrumentation framework used for debugging and profiling progra
 valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt ./build/vulkan-triangle/src/Release/vulkan-triangle
 ```
 
-## Validation Layers
+### Validation Layers
 When building for `Debug` this project adds the Vulkan Validation Layers while they are skipped when building for `Release`.
 
 In Vulkan, validation layers are a set of debugging and error-checking tools that help developers identify mistakes or improper usage of Vulkan API calls during development. They don't affect the performance of the application in production but are invaluable during the development and debugging stages.
