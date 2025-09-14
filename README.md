@@ -76,33 +76,40 @@ The projects assumes that the [Vulkan SDK](https://www.lunarg.com/vulkan-sdk/) i
         `export PATH=$VULKAN_SDK/bin:$PATH`
         `export LD_LIBRARY_PATH=$VULKAN_SDK/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}`
         `export VK_ADD_LAYER_PATH=$VULKAN_SDK/share/vulkan/explicit_layer.d`
-1. Update and install project dependencies:
+1. Install Python3:
     1. `sudo apt update`
     2. `sudo apt upgrade`
-    3. `sudo apt install pkg-config`
-    4. `sudo apt install cmake`
-    5. `sudo apt install clang`
-    6. `sudo apt install ninja-build`
-    7. `sudo apt install mesa-vulkan-drivers`
-1. Install Python3:
-    1. `sudo apt install python3`
-    2. `sudo apt install python-is-python3`
-    3. `sudo apt install python3.13-venv`
+    3. `sudo apt install python3`
+    4. `sudo apt install python-is-python3`
+    5. `sudo apt install python3.13-venv`
 2. Activate the Python virtual environment:
     1. `python -m venv <path>/.venv`
     2. `source <path>/.venv/bin/activate`
 4. Install dependencies within `.venv`:
     1. `python -m pip install --upgrade pip`
     2. `pip install conan`
+    3. `pip install cmake`
+5. Update and install project dependencies:
+    1. `sudo apt install pkg-config`
+    2. `sudo apt install cmake`
+    3. `sudo apt install clang`
+    4. `sudo apt install ninja-build`
+    5. `sudo apt install mesa-vulkan-drivers`
 
 ### Windows
 1. Download and install the Vulkan SDK installer from [LunarG](https://www.lunarg.com/vulkan-sdk/).
-2. Run the installer and follow its instructions.
-
-**WIP**
-- Install Python3
-- Install Conan
-- Install CMake
+    * Run the installer and follow its instructions.
+2. Install the MSVC compiler, e.g. through Visual Studio.
+3. Install Python3
+    1. Create the Python virtual environment:
+        * `python -m venv <path>/.venv`
+    2. Activate the Python virtual environment:
+        * Powershell: `<path>/.venv/Scripts/Activate.ps1`
+        * Bash: `<path>/.venv/Scripts/activate`
+4. Install dependencies within `.venv`:
+    1. `python -m pip install --upgrade pip`
+    2. `pip install conan`
+    3. `pip install cmake`
 
 # Compilation
 ## Conan Profiles
