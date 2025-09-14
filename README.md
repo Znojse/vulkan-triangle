@@ -60,6 +60,7 @@ The projects assumes that the [Vulkan SDK](https://www.lunarg.com/vulkan-sdk/) i
 
 ## Setup Environment
 ### Linux
+#### Debian
 1. Download and extract the Vulkan SDK:
     1. Download the `tar.xz` for Linux from [LunarG](https://www.lunarg.com/vulkan-sdk/).
     2. Create a vulkan folder in the home directory:
@@ -80,8 +81,9 @@ The projects assumes that the [Vulkan SDK](https://www.lunarg.com/vulkan-sdk/) i
     2. `sudo apt upgrade`
     3. `sudo apt install pkg-config`
     4. `sudo apt install cmake`
-    5. `sudo apt install mesa-vulkan-drivers`
-    6. `sudo apt install clang`
+    5. `sudo apt install clang`
+    6. `sudo apt install ninja-build`
+    7. `sudo apt install mesa-vulkan-drivers`
 1. Install Python3:
     1. `sudo apt install python3`
     2. `sudo apt install python-is-python3`
@@ -91,7 +93,7 @@ The projects assumes that the [Vulkan SDK](https://www.lunarg.com/vulkan-sdk/) i
     2. `source <path>/.venv/bin/activate`
 4. Install dependencies within `.venv`:
     1. `python -m pip install --upgrade pip`
-    1. `pip install conan`
+    2. `pip install conan`
 
 ### Windows
 1. Download and install the Vulkan SDK installer from [LunarG](https://www.lunarg.com/vulkan-sdk/).
