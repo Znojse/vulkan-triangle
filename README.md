@@ -34,7 +34,7 @@ vulkan-triangle
 |    README.txt
 |
 |----.vscode
-|        .c_cpp_properties.json            # Template to activate intelliSense for Vulkan in Windows and Linux environment.
+|        .c_cpp_properties.json.template   # Template to activate intelliSense for Vulkan in Windows and Linux environment.
 |
 |----conan-profiles                        # Profiles for different target environments.
 |        linux64-clang
