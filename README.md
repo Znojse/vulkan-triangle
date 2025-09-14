@@ -4,6 +4,7 @@
 2. [Prerequisites](#prerequisites)
     1. [Setup Environment](#setup-environment)
         1. [Linux](#linux)
+            1. [Debian](#debian)
         2. [Windows](#windows)
 3. [Compilation](#compilation)
     1. [Conan Profiles](#conan-profiles)
@@ -17,7 +18,7 @@
     1. [Formatting](#formatting)
     2. [Debugging](#debugging)
         1. [Valgrind](#valgrind)
-    3. [Validation Layers](#validation-layers)
+        2. [Validation Layers](#validation-layers)
 
 # Vulkan Triangle
 An application generating a RGB triangle within a window using Vulkan and following this [vulkan-tutorial](https://vulkan-tutorial.com/).
@@ -72,9 +73,9 @@ The projects assumes that the [Vulkan SDK](https://www.lunarg.com/vulkan-sdk/) i
     * Source the vulkan `setup-env` to the current shell, or into e.g. the `.profile` file for every session.
         * `source ~/vulkan/1.x.yy.z/setup-env.sh`
     * Alternatively setup the paths by setting these environment variables manually:
-        * `export VULKAN_SDK=~/vulkan/1.x.yy.z/x86_64`
-        `export PATH=$VULKAN_SDK/bin:$PATH`
-        `export LD_LIBRARY_PATH=$VULKAN_SDK/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}`
+        * `export VULKAN_SDK=~/vulkan/1.x.yy.z/x86_64` \
+        `export PATH=$VULKAN_SDK/bin:$PATH` \
+        `export LD_LIBRARY_PATH=$VULKAN_SDK/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}` \
         `export VK_ADD_LAYER_PATH=$VULKAN_SDK/share/vulkan/explicit_layer.d`
 1. Install Python3:
     1. `sudo apt update`
@@ -167,7 +168,10 @@ cmake --workflow --preset=vtAll
 #### Powershell
 ```powershell
 # Windows MSVC
-clear ; if (Test-Path -LiteralPath build/) { Remove-Item build/* -Recurse -Force } ; conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_type=Debug . ; conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_type=Release . ; cmake --workflow --preset=vtMSVCAll
+clear ; if (Test-Path -LiteralPath build/) { Remove-Item build/* -Recurse -Force } ; `
+conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_type=Debug . ; `
+conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_type=Release . ; `
+cmake --workflow --preset=vtMSVCAll
 ```
 
 # Run
@@ -181,13 +185,27 @@ clear ; if (Test-Path -LiteralPath build/) { Remove-Item build/* -Recurse -Force
 ```
 
 # Development
-**WIP**
+Tools used to simplify the development.
+
 ## Formatting
-`clang-format -i src/*.cpp src/*.hpp`
+`clang-format` is used to adhere to the preferred style in the project by using the `.clang-format` configuration file.
+
+1. Install clang-format:
+    * Linux: `sudo apt install clang-format`
+2. Run the command:
+    * `clang-format -i src/*.cpp src/*.hpp`
+
 ## Debugging
 ### Valgrind
+Valgrind is an instrumentation framework used for debugging and profiling programs, primarily to detect memory-related issues like memory leaks, undefined memory usage, and memory corruption.
+
 ```bash
 valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt ./build/vulkan-triangle/src/Release/vulkan-triangle
 ```
 
 ## Validation Layers
+When building for `Debug` this project adds the Vulkan Validation Layers while they are skipped when building for `Release`.
+
+In Vulkan, validation layers are a set of debugging and error-checking tools that help developers identify mistakes or improper usage of Vulkan API calls during development. They don't affect the performance of the application in production but are invaluable during the development and debugging stages.
+
+See section [Linux Debian](#debian) and [Windows](#windows) for setup instructions and the [Vulkan Docs](https://docs.vulkan.org/tutorial/latest/03_Drawing_a_triangle/00_Setup/02_Validation_layers.html) for more information.
