@@ -23,9 +23,6 @@ class VulkanTriangle(ConanFile):
         if self.settings.compiler != "msvc":
             self.tool_requires("ninja/[>=1.13.1]")
 
-            if self.settings.os == "Windows" and self.settings.compiler != "gcc":
-                self.tool_requires("mingw-builds/[>=15.1.0]")
-
         self.test_requires("catch2/[>=3.9.1]")
 
     def build(self):

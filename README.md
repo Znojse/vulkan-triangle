@@ -4,8 +4,9 @@
 2. [Prerequisites](#prerequisites)
     1. [Setup Environment](#setup-environment)
         1. [Linux](#linux)
-            1. [Debian](#debian)
+            * [Debian](#debian)
         2. [Windows](#windows)
+            * [MSYS2](#msys2)
 3. [Compilation](#compilation)
     1. [Conan Profiles](#conan-profiles)
     2. [Workflow Presets](#workflow-presets)
@@ -112,6 +113,16 @@ The projects assumes that the [Vulkan SDK](https://www.lunarg.com/vulkan-sdk/) i
     2. `pip install conan`
     3. `pip install cmake`
 
+#### MSYS2
+To be able to use other compilers other than `MSVC`, e.g. by using the `win64-clang` conan profile, MSYS2 is required.
+1. Download and run the installer from [msys2](https://www.msys2.org/).
+    * The recommended settings should suffice.
+2. In the MSYS2 terminal, install the MinGW-w64 toolchain.
+    * `pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain`
+3. Add the path of the MinGW-w64 bin folder to the Windows `PATH` environment.
+    * Example of MinGW-w64 path: `C:\msys64\ucrt64\bin`.
+    * A step by step guide can be found [here](https://code.visualstudio.com/docs/cpp/config-mingw).
+
 # Compilation
 ## Conan Profiles
 Used to make it easier to build for different targets with different compilers.
@@ -121,7 +132,7 @@ Used to make it easier to build for different targets with different compilers.
     * Not currently supported.
     * Due to being complex with Vulkan its not currently possible to use the `linux64-to-win64-gcc` profile for cross-compilation.
 * win64-clang
-    * Compiles but does not run as expected, GLFW window is not opened.
+    * Requires MSYS2/MinGW, see [MSYS2](#msys2).
 * win64-msvc
 
 ## Workflow Presets
@@ -172,6 +183,14 @@ clear ; if (Test-Path -LiteralPath build/) { Remove-Item build/* -Recurse -Force
 conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_type=Debug . ; `
 conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_type=Release . ; `
 cmake --workflow --preset=vtMSVCAll
+```
+```powershell
+# Windows Clang
+# Requires MSYS2, see the MSYS2 section under Prerequisites.
+clear ; if (Test-Path -LiteralPath build/) { Remove-Item build/* -Recurse -Force } ; `
+conan install --profile:a ./conan-profiles/win64-clang --build=missing -s build_type=Debug . ; `
+conan install --profile:a ./conan-profiles/win64-clang --build=missing -s build_type=Release . ; `
+cmake --workflow --preset=vtLinuxAll
 ```
 
 ### Run Examples
