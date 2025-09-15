@@ -137,11 +137,11 @@ Used to make it easier to build for different targets with different compilers.
 
 ## Workflow Presets
 Used to simplify and standardize the process of building and testing the project.
-* vtDebug
-* vtRelease
+* vtDefaultDebug
+* vtDefaultRelease
 * vtMSVCDebug
 * vtMSVCRelease
-* vtAll
+* vtDefaultAll
 * vtMSVCAll
 
 ## Instructions
@@ -156,7 +156,7 @@ clear &&
 rm -rf build/* &&
 conan install --profile:a ./conan-profiles/linux64-clang --build=missing -s build_type=Debug . &&
 conan install --profile:a ./conan-profiles/linux64-clang --build=missing -s build_type=Release . &&
-cmake --workflow --preset=vtAll
+cmake --workflow --preset=vtDefaultAll
 ```
 ```bash
 # MSVC
@@ -173,7 +173,7 @@ clear &&
 rm -rf build/* &&
 conan install --profile:b ./conan-profiles/linux64-gcc --profile:h ./conan-profiles/linux64-to-win64-gcc --build=missing -s build_type=Debug . &&
 conan install --profile:b ./conan-profiles/linux64-gcc --profile:h ./conan-profiles/linux64-to-win64-gcc --build=missing -s build_type=Release . &&
-cmake --workflow --preset=vtAll
+cmake --workflow --preset=vtDefaultAll
 ```
 
 #### Powershell
@@ -190,7 +190,7 @@ cmake --workflow --preset=vtMSVCAll
 clear ; if (Test-Path -LiteralPath build/) { Remove-Item build/* -Recurse -Force } ; `
 conan install --profile:a ./conan-profiles/win64-clang --build=missing -s build_type=Debug . ; `
 conan install --profile:a ./conan-profiles/win64-clang --build=missing -s build_type=Release . ; `
-cmake --workflow --preset=vtLinuxAll
+cmake --workflow --preset=vtDefaultAll
 ```
 
 ### Run Examples

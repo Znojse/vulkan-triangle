@@ -8,15 +8,24 @@
     "include": ["./ConanPresets.json"],
     "configurePresets": [
         {
-            "name": "vtDefault",
-            "description": "The default configuration for the vulkan triangle using Ninja Multi-Config generator.",
+            "name": "vtCommon",
+            "description": "Common configuration for the vulkan triangle.",
             "inherits": "conan-default",
-            "generator": "Ninja Multi-Config",
+            "hidden": true,
             "binaryDir": "${sourceDir}/build/vulkan-triangle",
             "toolchainFile": "${sourceDir}/build/generators/conan_toolchain.cmake",
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": { "type": "BOOL",   "value": true },
-                "CMAKE_CONFIGURATION_TYPES":     { "type": "STRING", "value": "Debug;Release" },
+                "CMAKE_CONFIGURATION_TYPES":     { "type": "STRING", "value": "Debug;Release" }
+            }
+        },
+        {
+            "name": "vtDefault",
+            "description": "The default configuration for the vulkan triangle using Ninja Multi-Config generator.",
+            "inherits": "vtCommon",
+            "generator": "Ninja Multi-Config",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": { "type": "BOOL",   "value": true },
                 "CMAKE_C_FLAGS_DEBUG_INIT":      { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion         -ggdb -O0" },
                 "CMAKE_C_FLAGS_RELEASE_INIT":    { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion               -O2" },
                 "CMAKE_CXX_FLAGS_DEBUG_INIT":    { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion -Werror -ggdb -O0" },
@@ -25,14 +34,11 @@
         },
         {
             "name": "vtMSVC",
-            "description": "The default configuration for the vulkan triangle using Ninja Multi-Config generator.",
-            "inherits": "conan-default",
+            "description": "The MSVC configuration for the vulkan triangle using Visual Studio generator.",
+            "inherits": "vtCommon",
             "generator": "Visual Studio 17 2022",
-            "binaryDir": "${sourceDir}/build/vulkan-triangle",
-            "toolchainFile": "${sourceDir}/build/generators/conan_toolchain.cmake",
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": { "type": "BOOL",   "value": true },
-                "CMAKE_CONFIGURATION_TYPES":     { "type": "STRING", "value": "Debug;Release" },
                 "CMAKE_C_FLAGS_DEBUG_INIT":      { "type": "STRING", "value": "/W4 /WX /Od" },
                 "CMAKE_C_FLAGS_RELEASE_INIT":    { "type": "STRING", "value": "/W4 /WX /O2" },
                 "CMAKE_CXX_FLAGS_DEBUG_INIT":    { "type": "STRING", "value": "/W4 /WX /Od" },
@@ -42,32 +48,32 @@
         }
     ],
     "buildPresets": [
-        { "name": "vtDebug",       "configurePreset": "vtDefault", "configuration": "Debug",   "inherits": "conan-debug" },
-        { "name": "vtRelease",     "configurePreset": "vtDefault", "configuration": "Release", "inherits": "conan-release" },
-        { "name": "vtMSVCDebug",   "configurePreset": "vtMSVC",    "configuration": "Debug",   "inherits": "conan-debug" },
-        { "name": "vtMSVCRelease", "configurePreset": "vtMSVC",    "configuration": "Release", "inherits": "conan-release" }
+        { "name": "vtDefaultDebug",     "configurePreset": "vtDefault",   "configuration": "Debug",   "inherits": "conan-debug" },
+        { "name": "vtDefaultRelease",   "configurePreset": "vtDefault",   "configuration": "Release", "inherits": "conan-release" },
+        { "name": "vtMSVCDebug",   "configurePreset": "vtMSVC", "configuration": "Debug",   "inherits": "conan-debug" },
+        { "name": "vtMSVCRelease", "configurePreset": "vtMSVC", "configuration": "Release", "inherits": "conan-release" }
     ],
     "testPresets": [
-        { "name": "vtDebug",       "configurePreset": "vtDefault", "configuration": "Debug",   "inherits": "conan-debug" },
-        { "name": "vtRelease",     "configurePreset": "vtDefault", "configuration": "Release", "inherits": "conan-release" },
-        { "name": "vtMSVCDebug",   "configurePreset": "vtMSVC",    "configuration": "Debug",   "inherits": "conan-debug" },
-        { "name": "vtMSVCRelease", "configurePreset": "vtMSVC",    "configuration": "Release", "inherits": "conan-release" }
+        { "name": "vtDefaultDebug",     "configurePreset": "vtDefault",   "configuration": "Debug",   "inherits": "conan-debug" },
+        { "name": "vtDefaultRelease",   "configurePreset": "vtDefault",   "configuration": "Release", "inherits": "conan-release" },
+        { "name": "vtMSVCDebug",   "configurePreset": "vtMSVC", "configuration": "Debug",   "inherits": "conan-debug" },
+        { "name": "vtMSVCRelease", "configurePreset": "vtMSVC", "configuration": "Release", "inherits": "conan-release" }
     ],
     "workflowPresets": [
         {
-            "name": "vtDebug",
+            "name": "vtDefaultDebug",
             "steps": [
                 { "type": "configure", "name": "vtDefault" },
-                { "type": "build",     "name": "vtDebug" },
-                { "type": "test",      "name": "vtDebug" }
+                { "type": "build",     "name": "vtDefaultDebug" },
+                { "type": "test",      "name": "vtDefaultDebug" }
             ]
         },
         {
-            "name": "vtRelease",
+            "name": "vtDefaultRelease",
             "steps": [
                 { "type": "configure", "name": "vtDefault" },
-                { "type": "build",     "name": "vtRelease" },
-                { "type": "test",      "name": "vtRelease" }
+                { "type": "build",     "name": "vtDefaultRelease" },
+                { "type": "test",      "name": "vtDefaultRelease" }
             ]
         },
         {
@@ -87,13 +93,13 @@
             ]
         },
         {
-            "name": "vtAll",
+            "name": "vtDefaultAll",
             "steps": [
                 { "type": "configure", "name": "vtDefault" },
-                { "type": "build",     "name": "vtDebug" },
-                { "type": "build",     "name": "vtRelease" },
-                { "type": "test",      "name": "vtDebug" },
-                { "type": "test",      "name": "vtRelease" }
+                { "type": "build",     "name": "vtDefaultDebug" },
+                { "type": "build",     "name": "vtDefaultRelease" },
+                { "type": "test",      "name": "vtDefaultDebug" },
+                { "type": "test",      "name": "vtDefaultRelease" }
             ]
         },
         {
