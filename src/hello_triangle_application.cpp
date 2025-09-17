@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <format>
 #include <fstream>
+#include <ios>
 #include <iostream>
 #include <limits>
 #include <map>
@@ -41,15 +42,60 @@ void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT
     }
 }
 
+static std::string GetDebugSeverityStr(VkDebugUtilsMessageSeverityFlagBitsEXT severity) {
+    switch (severity) {
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
+            return "Verbose";
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
+            return "Info";
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+            return "Warning";
+        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+            return "Error";
+        default:
+            std::stringstream severityStream {};
+            severityStream << "Invalid type code: " << severity << std::endl;
+            return severityStream.str();
+    }
+}
+
+static std::string GetDebugTypeStr(VkDebugUtilsMessageTypeFlagsEXT type) {
+    switch (type) {
+        case VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT:
+            return "General";
+        case VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT:
+            return "Validation";
+        case VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT:
+            return "Performance";
+        case VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT:
+            return "Device address binding";
+        default:
+            std::stringstream typeStream {};
+            typeStream << "Invalid type code: " << type << std::endl;
+            return typeStream.str();
+    }
+}
+
 // clang-format off
 static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT      messageSeverity,
                                                     VkDebugUtilsMessageTypeFlagsEXT             messageType,
                                                     const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
                                                     void*                                       /*pUserData*/) {
     // clang-format on
-    if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) {  // VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT
+    std::stringstream errMsg = {};
+    errMsg << "-----------------------------------------------" << std::endl;
+    errMsg << "Vulkan-Validation::debugCallback: \n" << pCallbackData->pMessage << std::endl << std::endl;
+    errMsg << "\tSeverity: " << GetDebugSeverityStr(messageSeverity) << "\n";
+    errMsg << "\tType: " << GetDebugTypeStr(messageType) << "\n";
+    errMsg << "\tObjects: ";
+
+    for (uint32_t i { 0 }; i < pCallbackData->objectCount; i++) {
+        errMsg << std::hex << pCallbackData->pObjects[i].objectHandle << " ";
+    }
+
+    if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
         // Message is important enough to show
-        std::cerr << "validation layer: " << messageType << " - " << pCallbackData->pMessage << std::endl;
+        std::cerr << errMsg.str() << std::endl;
     }
 
     return VK_FALSE;
