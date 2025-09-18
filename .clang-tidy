@@ -1,17 +1,19 @@
 Checks: >
   -*,
   clang-analyzer-*,
-  bugprone-*,
-  modernize-*,
-  performance-*,
-  readability-*,
   cppcoreguidelines-*,
+  -cppcoreguidelines-pro-type-reinterpret-cast,
+  bugprone-*,
+  -bugprone-unchecked-optional-access,
+  performance-*,
+  modernize-*,
+  readability-*,
   hicpp-*
 
 UseColor: true
-# WarningsAsErrors: '*'
+WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
 FormatStyle:     none
-CheckOptions:
-  - key:             readability-identifier-naming.VariableCase
-    value:           lower_case
+# CheckOptions:
+#   - key:             readability-identifier-naming.VariableCase
+#     value:           lower_case

@@ -4,15 +4,15 @@
 
 #include "hello_triangle_application.hpp"
 
-int main() {
+auto main() -> int {
     vt::triangle::HelloTriangleApplication app;
 
-    std::cout << "Hello Vulkan Triangle!" << std::endl;
+    std::cout << "Hello Vulkan Triangle!\n";
 
     try {
         app.run();
     } catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
+        std::cerr << e.what() << "\n";
         return EXIT_FAILURE;
     }
 
