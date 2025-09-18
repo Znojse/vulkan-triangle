@@ -7,6 +7,7 @@
             * [Debian](#debian)
         2. [Windows](#windows)
             * [MSYS2](#msys2)
+            * [WSL](#wsl)
 3. [Compilation](#compilation)
     1. [Conan Profiles](#conan-profiles)
     2. [Workflow Presets](#workflow-presets)
@@ -16,8 +17,9 @@
             2. [Powershell](#powershell)
         2. [Run Examples](#run-examples)
 4. [Development](#development)
-    1. [Formatting](#formatting)
-    2. [Debugging](#debugging)
+    1. [Linting](#linting)
+    2. [Formatting](#formatting)
+    3. [Debugging](#debugging)
         1. [Valgrind](#valgrind)
         2. [Validation Layers](#validation-layers)
 
@@ -123,6 +125,17 @@ To be able to use other compilers other than `MSVC`, e.g. by using the `win64-cl
     * Example of MinGW-w64 path: `C:\msys64\ucrt64\bin`.
     * A step by step guide can be found [here](https://code.visualstudio.com/docs/cpp/config-mingw).
 
+#### WSL
+WSL, Windows Subsystem for Linux, is a feature in Windows that lets you run a Linux environment directly on Windows, without needing a separate virtual machine or dual boot.
+
+Setup instructions can be found [here](https://learn.microsoft.com/en-us/windows/wsl/install).
+
+Setup e.g. a Debian environment in WSL:
+1. `wsl --install`
+2. `wsl.exe --install Debian`
+3. `wsl --distribution Debian`
+4. Follow the [Debian](#debian) for project specific setup instuctions.
+
 # Compilation
 ## Conan Profiles
 Used to make it easier to build for different targets with different compilers.
@@ -138,11 +151,19 @@ Used to make it easier to build for different targets with different compilers.
 ## Workflow Presets
 Used to simplify and standardize the process of building and testing the project.
 * vtDefaultDebug
+    * Only builds the project for `Debug`.
 * vtDefaultRelease
+    * Only builds the project for `Release`.
 * vtMSVCDebug
+    * Only builds the project for `Debug`, but MSVC specific, `win64-msvc`.
 * vtMSVCRelease
+    * Only builds the project for `Release`, but MSVC specific, `win64-msvc`.
 * vtDefaultAll
+    * Builds the project for both `Debug` and `Release`.
 * vtMSVCAll
+    * Builds the project for both `Debug` and `Release`, but MSVC specific, `win64-msvc`.
+* vtDefaultLint
+    * Runs the clang-tidy linter and builds the project for `Debug`.
 
 ## Instructions
 1. Run `conan install` with prefered profile for both `Debug` and `Release`.
@@ -156,6 +177,7 @@ clear &&
 rm -rf build/* &&
 conan install --profile:a ./conan-profiles/linux64-clang --build=missing -s build_type=Debug . &&
 conan install --profile:a ./conan-profiles/linux64-clang --build=missing -s build_type=Release . &&
+cmake --workflow --preset=vtDefaultLint &&
 cmake --workflow --preset=vtDefaultAll
 ```
 ```bash
@@ -205,6 +227,21 @@ cmake --workflow --preset=vtDefaultAll
 
 # Development
 Tools used to simplify the development.
+
+## Linting
+Linting is the process of automatically checking your source code for potential errors, bugs, stylistic issues, or suspicious constructs. A linter is a tool that analyzes your code and helps you catch problems early, improve code quality, and maintain consistent coding style.
+
+This project uses Clang-Tidy in a Linux environment. To run this in e.g. Windows setup a WSL-environment with e.g. Debian as distro, follow the [WSL](#wsl) section for setup instructions.
+
+In a Linux environment, this works with both the `linux64-gcc` and `linux64-clang` [profiles](#conan-profiles):
+```bash
+# Linux Clang-Tidy
+clear &&
+rm -rf build/* &&
+conan install --profile:a ./conan-profiles/linux64-clang --build=missing -s build_type=Debug . &&
+conan install --profile:a ./conan-profiles/linux64-clang --build=missing -s build_type=Release . &&
+cmake --workflow --preset=vtDefaultLint
+```
 
 ## Formatting
 `clang-format` is used to adhere to the preferred style in the project by using the `.clang-format` configuration file.

@@ -25,11 +25,10 @@
             "inherits": "vtCommon",
             "generator": "Ninja Multi-Config",
             "cacheVariables": {
-                "CMAKE_EXPORT_COMPILE_COMMANDS": { "type": "BOOL",   "value": true },
-                "CMAKE_C_FLAGS_DEBUG_INIT":      { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion         -ggdb -O0" },
-                "CMAKE_C_FLAGS_RELEASE_INIT":    { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion               -O2" },
-                "CMAKE_CXX_FLAGS_DEBUG_INIT":    { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion -Werror -ggdb -O0" },
-                "CMAKE_CXX_FLAGS_RELEASE_INIT":  { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion -Werror       -O2" }
+                "CMAKE_C_FLAGS_DEBUG_INIT":      { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion         -fdiagnostics-color=always -ggdb -O0" },
+                "CMAKE_C_FLAGS_RELEASE_INIT":    { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion         -fdiagnostics-color=always       -O2" },
+                "CMAKE_CXX_FLAGS_DEBUG_INIT":    { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion -Werror -fdiagnostics-color=always -ggdb -O0" },
+                "CMAKE_CXX_FLAGS_RELEASE_INIT":  { "type": "STRING", "value": "-Wall -Wpedantic -Wextra -Wconversion -Werror -fdiagnostics-color=always       -O2" }
             }
         },
         {
@@ -38,28 +37,47 @@
             "inherits": "vtCommon",
             "generator": "Visual Studio 17 2022",
             "cacheVariables": {
-                "CMAKE_EXPORT_COMPILE_COMMANDS": { "type": "BOOL",   "value": true },
                 "CMAKE_C_FLAGS_DEBUG_INIT":      { "type": "STRING", "value": "/W4 /WX /Od" },
                 "CMAKE_C_FLAGS_RELEASE_INIT":    { "type": "STRING", "value": "/W4 /WX /O2" },
                 "CMAKE_CXX_FLAGS_DEBUG_INIT":    { "type": "STRING", "value": "/W4 /WX /Od" },
                 "CMAKE_CXX_FLAGS_RELEASE_INIT":  { "type": "STRING", "value": "/W4 /WX /O2" }
-
+            }
+        },
+        {
+            "name": "vtDefaultLint",
+            "description": "The default linter configuration for the vulkan triangle.",
+            "inherits": "vtDefault",
+            "binaryDir": "${sourceDir}/build/vulkan-triangle/${presetName}",
+            "generator": "Unix Makefiles",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": { "type": "STRING", "value": "Debug" },
+                "ENABLE_LINT":      { "type": "BOOL",   "value": true }
             }
         }
     ],
     "buildPresets": [
-        { "name": "vtDefaultDebug",     "configurePreset": "vtDefault",   "configuration": "Debug",   "inherits": "conan-debug" },
-        { "name": "vtDefaultRelease",   "configurePreset": "vtDefault",   "configuration": "Release", "inherits": "conan-release" },
-        { "name": "vtMSVCDebug",   "configurePreset": "vtMSVC", "configuration": "Debug",   "inherits": "conan-debug" },
-        { "name": "vtMSVCRelease", "configurePreset": "vtMSVC", "configuration": "Release", "inherits": "conan-release" }
+        { "name": "vtDefaultLint",    "configurePreset": "vtDefaultLint", "configuration": "Debug",   "inherits": "conan-debug" },
+        { "name": "vtDefaultDebug",   "configurePreset": "vtDefault",     "configuration": "Debug",   "inherits": "conan-debug" },
+        { "name": "vtDefaultRelease", "configurePreset": "vtDefault",     "configuration": "Release", "inherits": "conan-release" },
+        { "name": "vtMSVCDebug",      "configurePreset": "vtMSVC",        "configuration": "Debug",   "inherits": "conan-debug" },
+        { "name": "vtMSVCRelease",    "configurePreset": "vtMSVC",        "configuration": "Release", "inherits": "conan-release" }
     ],
     "testPresets": [
-        { "name": "vtDefaultDebug",     "configurePreset": "vtDefault",   "configuration": "Debug",   "inherits": "conan-debug" },
-        { "name": "vtDefaultRelease",   "configurePreset": "vtDefault",   "configuration": "Release", "inherits": "conan-release" },
-        { "name": "vtMSVCDebug",   "configurePreset": "vtMSVC", "configuration": "Debug",   "inherits": "conan-debug" },
-        { "name": "vtMSVCRelease", "configurePreset": "vtMSVC", "configuration": "Release", "inherits": "conan-release" }
+        { "name": "vtDefaultLint",    "configurePreset": "vtDefaultLint", "configuration": "Lint",    "inherits": "conan-debug" },
+        { "name": "vtDefaultDebug",   "configurePreset": "vtDefault",     "configuration": "Debug",   "inherits": "conan-debug" },
+        { "name": "vtDefaultRelease", "configurePreset": "vtDefault",     "configuration": "Release", "inherits": "conan-release" },
+        { "name": "vtMSVCDebug",      "configurePreset": "vtMSVC",        "configuration": "Debug",   "inherits": "conan-debug" },
+        { "name": "vtMSVCRelease",    "configurePreset": "vtMSVC",        "configuration": "Release", "inherits": "conan-release" }
     ],
     "workflowPresets": [
+        {
+            "name": "vtDefaultLint",
+            "steps": [
+                { "type": "configure", "name": "vtDefaultLint" },
+                { "type": "build",     "name": "vtDefaultLint" },
+                { "type": "test",      "name": "vtDefaultLint" }
+            ]
+        },
         {
             "name": "vtDefaultDebug",
             "steps": [
