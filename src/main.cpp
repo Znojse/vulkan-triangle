@@ -1,6 +1,6 @@
 #include <cstdlib>
+#include <exception>
 #include <iostream>
-#include <stdexcept>
 
 #include "hello_triangle_application.hpp"
 
@@ -10,7 +10,7 @@ auto main() -> int {
     std::cout << "Hello Vulkan Triangle!\n";
 
     try {
-        app.run();
+        app.Run();
     } catch (const std::exception& e) {
         std::cerr << e.what() << "\n";
         return EXIT_FAILURE;

@@ -11,14 +11,14 @@
 
 namespace vt::utilities {
 
-static auto readBinaryFile(const std::string& filename) -> std::vector<char> {
+static auto ReadBinaryFile(const std::string& filename) -> std::vector<char> {
     std::ifstream file(filename, std::ios::ate | std::ios::binary);
 
     if (!file.is_open()) {
-        throw std::runtime_error(std::format("utilities::readBinaryFile: Failed to open file: [{}].", filename));
+        throw std::runtime_error(std::format("Utilities::readBinaryFile: Failed to open file: [{}].", filename));
     }
 
-    size_t            fileSize = static_cast<size_t>(file.tellg());
+    const size_t      fileSize = static_cast<size_t>(file.tellg());
     std::vector<char> buffer(fileSize);
 
     file.seekg(0);
@@ -28,7 +28,7 @@ static auto readBinaryFile(const std::string& filename) -> std::vector<char> {
     return buffer;
 }
 
-static auto chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) -> VkSurfaceFormatKHR {
+static auto ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) -> VkSurfaceFormatKHR {
     for (const auto& availableFormat : availableFormats) {
         if (availableFormat.format == VK_FORMAT_B8G8R8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
             return availableFormat;
@@ -40,7 +40,7 @@ static auto chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& avail
     return availableFormats[0];
 }
 
-static auto chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) -> VkPresentModeKHR {
+static auto ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) -> VkPresentModeKHR {
     for (const auto& availablePresentMode : availablePresentModes) {
         if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
             return availablePresentMode;

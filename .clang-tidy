@@ -1,22 +1,48 @@
 Checks: >
   -*,
   bugprone-*,
-  -bugprone-unchecked-optional-access,
   clang-analyzer-*,
   cppcoreguidelines-*,
   -cppcoreguidelines-pro-type-reinterpret-cast,
+  google-*,
   hicpp-*,
+  misc-*,
   linuxkernel-must-check-errs,
   llvm-*,
   -llvm-header-guard,
   modernize-*,
   performance-*,
+  portability-*,
+  -portability-avoid-pragma-once,
   readability-*
+
+CheckOptions:
+  - key:   readability-identifier-naming.VariableCase
+    value: camelBack
+  - key: readability-identifier-naming.MemberCase
+    value: camelBack
+  - key:   readability-identifier-naming.PrivateMemberCase
+    value: camelBack
+  - key:   readability-identifier-naming.PrivateMemberPrefix
+    value: m_
+  - key: readability-identifier-naming.PrivateMemberConstCase
+    value: CamelCase
+  - key: readability-identifier-naming.PrivateMemberConstPrefix
+    value: k
+  - key: readability-identifier-naming.PrivateStaticMemberConstCase
+    value: CamelCase
+  - key: readability-identifier-naming.PrivateStaticMemberConstPrefix
+    value: k
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.FunctionCase
+    value: CamelCase
 
 UseColor: true
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
 FormatStyle:     none
-# CheckOptions:
-#   - key:             readability-identifier-naming.VariableCase
-#     value:           lower_case

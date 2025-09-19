@@ -10,11 +10,11 @@
 namespace vt::validation {
 
 // clang-format off
-// NOLINTNEXTLINE(readability-inconsistent-declaration-parameter-name)
-auto vkCreateDebugUtilsMessengerEXT(VkInstance                                instance,
-                                    const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
-                                    const VkAllocationCallbacks*              pAllocator,
-                                    VkDebugUtilsMessengerEXT*                 pDebugMessenger) -> VkResult {
+// NOLINTNEXTLINE(readability-inconsistent-declaration-parameter-name, readability-identifier-naming)
+auto inline vkCreateDebugUtilsMessengerEXT(VkInstance                                instance,
+                                           const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
+                                           const VkAllocationCallbacks*              pAllocator,
+                                           VkDebugUtilsMessengerEXT*                 pDebugMessenger) -> VkResult {
     // clang-format on
     auto pFunc = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT"));
 
@@ -25,7 +25,7 @@ auto vkCreateDebugUtilsMessengerEXT(VkInstance                                in
     return VK_ERROR_EXTENSION_NOT_PRESENT;
 }
 
-void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
+void inline DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
     auto pFunc = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
 
     if (nullptr != pFunc) {
@@ -68,7 +68,7 @@ static auto GetDebugTypeStr(VkDebugUtilsMessageTypeFlagsEXT type) -> std::string
 }
 
 // clang-format off
-static VKAPI_ATTR auto VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT      messageSeverity,
+static VKAPI_ATTR auto VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT      messageSeverity,
                                                 VkDebugUtilsMessageTypeFlagsEXT             messageType,
                                                 const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
                                                 void*                                       /*pUserData*/) -> VkBool32 {
@@ -80,7 +80,7 @@ static VKAPI_ATTR auto VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagB
     errMsg << "\tType: " << GetDebugTypeStr(messageType) << "\n";
     errMsg << "\tObjects: ";
 
-    std::span<const VkDebugUtilsObjectNameInfoEXT> callbackObjectSpan = { pCallbackData->pObjects, pCallbackData->objectCount };
+    const std::span<const VkDebugUtilsObjectNameInfoEXT> callbackObjectSpan = { pCallbackData->pObjects, pCallbackData->objectCount };
     for (const auto& object : callbackObjectSpan) {
         errMsg << std::hex << object.objectHandle << " ";
     }
