@@ -20,107 +20,8 @@
 #include <GLFW/glfw3.h>
 
 #include "hello_triangle_application.hpp"
-
-// clang-format off
-// NOLINTNEXTLINE(readability-inconsistent-declaration-parameter-name)
-auto vkCreateDebugUtilsMessengerEXT(VkInstance                                instance,
-                                    const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
-                                    const VkAllocationCallbacks*              pAllocator,
-                                    VkDebugUtilsMessengerEXT*                 pDebugMessenger) -> VkResult {
-    // clang-format on
-    auto pFunc = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT"));
-
-    if (nullptr != pFunc) {
-        return pFunc(instance, pCreateInfo, pAllocator, pDebugMessenger);
-    }
-
-    return VK_ERROR_EXTENSION_NOT_PRESENT;
-}
-
-void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator) {
-    auto pFunc = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT"));
-
-    if (nullptr != pFunc) {
-        pFunc(instance, debugMessenger, pAllocator);
-    }
-}
-
-static auto GetDebugSeverityStr(VkDebugUtilsMessageSeverityFlagBitsEXT severity) -> std::string {
-    switch (severity) {
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
-            return "Verbose";
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
-            return "Info";
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
-            return "Warning";
-        case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
-            return "Error";
-        default:
-            std::stringstream severityStream {};
-            severityStream << "Invalid type code: " << severity << "\n";
-            return severityStream.str();
-    }
-}
-
-static auto GetDebugTypeStr(VkDebugUtilsMessageTypeFlagsEXT type) -> std::string {
-    switch (type) {
-        case VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT:
-            return "General";
-        case VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT:
-            return "Validation";
-        case VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT:
-            return "Performance";
-        case VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT:
-            return "Device address binding";
-        default:
-            std::stringstream typeStream {};
-            typeStream << "Invalid type code: " << type << "\n";
-            return typeStream.str();
-    }
-}
-
-// clang-format off
-static VKAPI_ATTR auto VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT      messageSeverity,
-                                                    VkDebugUtilsMessageTypeFlagsEXT             messageType,
-                                                    const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-                                                    void*                                       /*pUserData*/) -> VkBool32 {
-    // clang-format on
-    std::stringstream errMsg = {};
-    errMsg << "-----------------------------------------------\n";
-    errMsg << "Vulkan-Validation::debugCallback: \n" << pCallbackData->pMessage << "\n\n";
-    errMsg << "\tSeverity: " << GetDebugSeverityStr(messageSeverity) << "\n";
-    errMsg << "\tType: " << GetDebugTypeStr(messageType) << "\n";
-    errMsg << "\tObjects: ";
-
-    std::span<const VkDebugUtilsObjectNameInfoEXT> callbackObjectSpan = { pCallbackData->pObjects, pCallbackData->objectCount };
-    for (const auto& object : callbackObjectSpan) {
-        errMsg << std::hex << object.objectHandle << " ";
-    }
-
-    if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
-        // Message is important enough to show
-        std::cerr << errMsg.str() << "\n";
-    }
-
-    return VK_FALSE;
-}
-
-static auto readFile(const std::string& filename) -> std::vector<char> {
-    std::ifstream file(filename, std::ios::ate | std::ios::binary);
-
-    if (!file.is_open()) {
-        throw std::runtime_error(std::format("readFile: Failed to open file: [{}].", filename));
-    }
-
-    size_t            fileSize = static_cast<size_t>(file.tellg());
-    std::vector<char> buffer(fileSize);
-
-    file.seekg(0);
-    file.read(buffer.data(), static_cast<uint32_t>(fileSize));
-    file.close();
-
-    return buffer;
-}
+#include "utilities.hpp"
+#include "vulkan_validation.hpp"
 
 namespace vt::triangle {
 
@@ -230,7 +131,7 @@ void HelloTriangleApplication::cleanup() {
     vkDestroyDevice(device, nullptr);
 
     if (enableValidationLayers) {
-        DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
+        validation::DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
     }
 
     vkDestroySurfaceKHR(instance, surface, nullptr);
@@ -308,7 +209,7 @@ void HelloTriangleApplication::setupDebugMessenger() {
     }
 
     auto createInfo = populateDebugMessengerCreateInfo();
-    if (const auto& result = vkCreateDebugUtilsMessengerEXT(instance, createInfo.get(), nullptr, &debugMessenger) != VK_SUCCESS) {
+    if (const auto& result = validation::vkCreateDebugUtilsMessengerEXT(instance, createInfo.get(), nullptr, &debugMessenger) != VK_SUCCESS) {
         throw std::runtime_error(std::format("{}::setupDebugMessenger: Failed to set up debug messenger, error code: {}.", kClassName, result));
     }
 }
@@ -324,7 +225,7 @@ auto HelloTriangleApplication::populateDebugMessengerCreateInfo() -> std::shared
                               static_cast<VkDebugUtilsMessageTypeFlagsEXT>(VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT) |
                               static_cast<VkDebugUtilsMessageTypeFlagsEXT>(VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT);
 
-    createInfo->pfnUserCallback = debugCallback;
+    createInfo->pfnUserCallback = validation::debugCallback;
     createInfo->pUserData       = this;  // Optional - nullptr
 
     return createInfo;
@@ -515,8 +416,8 @@ auto HelloTriangleApplication::querySwapChainSupport(VkPhysicalDevice _device) -
 
 void HelloTriangleApplication::createSwapchain() {
     SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice);
-    VkSurfaceFormatKHR      surfaceFormat    = chooseSwapSurfaceFormat(swapChainSupport.formats);
-    VkPresentModeKHR        presentMode      = chooseSwapPresentMode(swapChainSupport.presentModes);
+    VkSurfaceFormatKHR      surfaceFormat    = utilities::chooseSwapSurfaceFormat(swapChainSupport.formats);
+    VkPresentModeKHR        presentMode      = utilities::chooseSwapPresentMode(swapChainSupport.presentModes);
     VkExtent2D              extent           = chooseSwapExtent(swapChainSupport.capabilities);
 
     // Decide how many images we would like to have in the swap chain.
@@ -598,29 +499,6 @@ void HelloTriangleApplication::createImageViews() {
     }
 }
 
-auto HelloTriangleApplication::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) -> VkSurfaceFormatKHR {
-    for (const auto& availableFormat : availableFormats) {
-        if (availableFormat.format == VK_FORMAT_B8G8R8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
-            return availableFormat;
-        }
-    }
-
-    // If this fails then it could be good to start ranking available formats,
-    // but usually its ok to settle with the first format that is specified.
-    return availableFormats[0];
-}
-
-auto HelloTriangleApplication::chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) -> VkPresentModeKHR {
-    for (const auto& availablePresentMode : availablePresentModes) {
-        if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
-            return availablePresentMode;
-        }
-    }
-
-    // Fallback, only the VK_PRESENT_MODE_FIFO_KHR mode is guaranteed to be available.
-    return VK_PRESENT_MODE_FIFO_KHR;
-}
-
 auto HelloTriangleApplication::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) -> VkExtent2D {
     if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
         return capabilities.currentExtent;
@@ -686,8 +564,8 @@ void HelloTriangleApplication::createRenderPass() {
 
 void HelloTriangleApplication::createGraphicsPipeline() {
     std::filesystem::path shaderPath     = std::filesystem::current_path() += std::filesystem::path("/build/vulkan-triangle/src");
-    auto                  vertShaderCode = readFile(std::filesystem::path(shaderPath / "triangle.vert.spv").string());
-    auto                  fragShaderCode = readFile(std::filesystem::path(shaderPath / "triangle.frag.spv").string());
+    auto                  vertShaderCode = utilities::readBinaryFile(std::filesystem::path(shaderPath / "triangle.vert.spv").string());
+    auto                  fragShaderCode = utilities::readBinaryFile(std::filesystem::path(shaderPath / "triangle.frag.spv").string());
 
     VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
     VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);

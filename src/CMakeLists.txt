@@ -12,6 +12,8 @@ target_sources(vulkan-triangle
         BASE_DIRS .
         FILES
         hello_triangle_application.hpp
+        vulkan_validation.hpp
+        utilities.hpp
 )
 
 target_link_libraries(vulkan-triangle PRIVATE Vulkan::Vulkan glfw glm::glm)

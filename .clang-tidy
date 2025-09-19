@@ -1,14 +1,17 @@
 Checks: >
   -*,
+  bugprone-*,
+  -bugprone-unchecked-optional-access,
   clang-analyzer-*,
   cppcoreguidelines-*,
   -cppcoreguidelines-pro-type-reinterpret-cast,
-  bugprone-*,
-  -bugprone-unchecked-optional-access,
-  performance-*,
+  hicpp-*,
+  linuxkernel-must-check-errs,
+  llvm-*,
+  -llvm-header-guard,
   modernize-*,
-  readability-*,
-  hicpp-*
+  performance-*,
+  readability-*
 
 UseColor: true
 WarningsAsErrors: '*'

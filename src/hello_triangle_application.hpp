@@ -106,11 +106,9 @@ class HelloTriangleApplication {
     auto findQueueFamilies(VkPhysicalDevice device) -> QueueFamilyIndices;
     auto querySwapChainSupport(VkPhysicalDevice device) -> SwapChainSupportDetails;
 
-    void        createSwapchain();
-    void        createImageViews();
-    static auto chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) -> VkSurfaceFormatKHR;
-    static auto chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) -> VkPresentModeKHR;
-    auto        chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) -> VkExtent2D;
+    void createSwapchain();
+    void createImageViews();
+    auto chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) -> VkExtent2D;
 
     void createRenderPass();
     void createGraphicsPipeline();
