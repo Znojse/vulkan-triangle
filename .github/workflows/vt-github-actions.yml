@@ -44,7 +44,7 @@ jobs:
           pip install --upgrade pip && pip install conan
           pip install --upgrade pip && pip install cmake
           pip list
-          shell: pwsh
+        shell: pwsh
       - name: Build and test the project.
         run: |
           .\venv\Scripts\Activate.ps1
