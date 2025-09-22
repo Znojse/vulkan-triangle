@@ -40,12 +40,14 @@ jobs:
         run: |
           python -m venv venv
           .\venv\Scripts\Activate.ps1
+          python -c "import sys; print(sys.executable)"
           pip install --upgrade pip && pip install conan
           pip install --upgrade pip && pip install cmake
+          pip list
         shell: pwsh
       - name: Build and test the project.
         run: |
-          clear ; if (Test-Path -LiteralPath build/) { Remove-Item build/* -Recurse -Force }
+          if (Test-Path -LiteralPath build/) { Remove-Item build/* -Recurse -Force }
           conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_type=Debug .
           conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_type=Release .
           cmake --workflow --preset=vtMSVCAll
