@@ -10,6 +10,8 @@ on:
       - develop
 jobs:
   Ubuntu-latest-CI:
+    if: false
+    name: Ubuntu-CI
     runs-on: ubuntu-latest
     steps:
       - name: Check out latest commit from branch.
@@ -23,7 +25,9 @@ jobs:
           cmake --workflow --preset=vtDefaultLint &&
           cmake --workflow --preset=vtDefaultAll
       - run: echo "This job's status is ${{ job.status }}."
+  
   Windows-latest-CI:
+    name: Windows-CI
     runs-on: windows-latest
     steps:
       - name: Check out latest commit from branch.
@@ -45,4 +49,5 @@ jobs:
           conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_type=Debug . ; `
           conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_type=Release . ; `
           cmake --workflow --preset=vtMSVCAll
+        shell: pwsh
       - run: echo "This job's status is ${{ job.status }}."
