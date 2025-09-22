@@ -28,12 +28,21 @@ jobs:
     steps:
       - name: Check out latest commit from branch.
         uses: actions/checkout@v5
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Create virtual environment and install Conan.
+        run: |
+          python -m venv venv
+          .\venv\Scripts\Activate.ps1
+          pip install --upgrade pip && pip install conan
+          pip install --upgrade pip && pip install cmake
+        shell: pwsh
       - name: Build and testing the project for Windows.
         run: |
-          clear &&
-          rm -rf build/* &&
-          conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Debug . &&
-          conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Release . &&
-          cmake --workflow --preset=vtDefaultLint &&
-          cmake --workflow --preset=vtDefaultAll
+          clear ; if (Test-Path -LiteralPath build/) { Remove-Item build/* -Recurse -Force } ; `
+          conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_type=Debug . ; `
+          conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_type=Release . ; `
+          cmake --workflow --preset=vtMSVCAll
       - run: echo "This job's status is ${{ job.status }}."
