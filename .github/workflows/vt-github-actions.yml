@@ -37,7 +37,9 @@ jobs:
           ref: "${{ github.head_ref || github.ref_name }}"
 
       - name: Print checked-out branch
-        run: git branch --show-current
+        run: |
+          git config --global --add safe.directory "${{ github.workspace }}"
+          git branch --show-current
 
       - name: Lint, build and test the project.
         run: |
