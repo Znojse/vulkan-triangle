@@ -1,0 +1,6 @@
+# Ignore everything
+*
+
+# Except Dockerfile and Vulkan SDK archive
+!Dockerfile
+!vulkansdk-linux-x86_64-*.tar.xz

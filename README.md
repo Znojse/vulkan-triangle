@@ -46,6 +46,13 @@ vulkan-triangle
 |        linux64-to-win64-gcc
 |        win64-msvc
 |
+|----docker                                # Dockerfiles, images and other required files to setup containers to run in CI/CD environment.
+|    |
+|    |----linux
+|         |    .dockerignore
+|         |    Dockerfile
+|         |    vulkansdk-linux-x86_64-1.4.321.1.tar.xz
+|
 |----src
 |    |    CMakeLists.txt
 |    |    hello_triangle_application.cpp
@@ -55,8 +62,9 @@ vulkan-triangle
 |    ----shaders                           # Shaders determine how surfaces and objects appear in a digital scene.
 |    |    |    trinagle.frag
 |    |    |    trinagle.vert
-|    |    ----cmake
-|    |    |       CompileShaders.cmake     # CMake module to compile the shaders during application compilation.
+|    |    |
+|    |    |----cmake
+|    |         |    CompileShaders.cmake   # CMake module to compile the shaders during application compilation.
 ```
 
 # Prerequisites
