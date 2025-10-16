@@ -22,7 +22,7 @@ jobs:
       - name: Check out latest commit from branch.
         uses: actions/checkout@v5
         with:
-          ref: "${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}"
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Print checked-out branch
         run: git branch --show-current
@@ -64,7 +64,7 @@ jobs:
       - name: Check out latest commit from branch.
         uses: actions/checkout@v5
         with:
-          ref: "${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}"
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Print checked-out branch
         run: git branch --show-current
