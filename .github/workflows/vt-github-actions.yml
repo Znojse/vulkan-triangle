@@ -27,7 +27,7 @@ jobs:
       - name: Install package dependencies.
         run: |
           set -e
-          sudo apt update && sudo apt install -y pkg-config clang ninja-build git
+          apt-get update && apt-get install -y pkg-config clang ninja-build git
           python -m pip install --upgrade pip --no-cache-dir --root-user-action=ignore
           python -m pip install conan cmake --no-cache-dir --root-user-action=ignore
 
