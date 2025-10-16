@@ -17,9 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/znojse/vulkan-ci:1.4.321.1-trixie-slim
-      options: --user root
-    env:
-      CONAN_SYSREQUIRES_SUDO: 0
+      options: --user root -e CONAN_SYSREQUIRES_SUDO=0
     steps:
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -46,7 +44,6 @@ jobs:
       - name: Lint, build and test the project.
         run: |
           set -e
-          export CONAN_SYSREQUIRES_SUDO=0
           conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Debug .
           conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Release .
           cmake --workflow --preset=vtDefaultLint
