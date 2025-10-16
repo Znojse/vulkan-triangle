@@ -18,6 +18,8 @@ jobs:
     container:
       image: ghcr.io/znojse/vulkan-ci:1.4.321.1-trixie-slim
       options: --user root
+    env:
+      CONAN_SYSREQUIRES_SUDO: 0
     steps:
       - name: Set up Python
         uses: actions/setup-python@v6
