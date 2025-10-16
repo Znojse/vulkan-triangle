@@ -38,7 +38,7 @@ jobs:
 
       - name: Print checked-out branch
         run: |
-          git config --global --add safe.directory "${{ github.workspace }}"
+          git config --global --add safe.directory /__w/vulkan-triangle/vulkan-triangle
           git branch --show-current
 
       - name: Lint, build and test the project.
