@@ -24,20 +24,20 @@ jobs:
         with:
           python-version: '3.13'
 
-      # - name: Cache pip packages.
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ~/.cache/pip
-      #     key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-pip-
+      - name: Cache pip packages.
+        uses: actions/cache@v4
+        with:
+          path: /tmp/pip-cache
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       - name: Install package dependencies.
         run: |
           set -e
           apt update && apt install -y pkg-config clang ninja-build git
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m pip install -r requirements.txt
 
       - name: Check out latest commit from branch.
         uses: actions/checkout@v5
