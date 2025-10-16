@@ -1,43 +1,76 @@
-FROM debian:trixie
-LABEL author="Alexander Olsson"
+FROM debian:trixie-slim AS builder
+
+# Set environment variables.
+ENV VULKAN_VERSION=1.4.321.1
+
+WORKDIR /tmp/vulkan
+
+# Copy and extract the Vulkan SDK.
+RUN apt update && apt install -y xz-utils
+COPY vulkansdk-linux-x86_64-$VULKAN_VERSION.tar.xz .
+RUN tar -xf ./vulkansdk-linux-x86_64-$VULKAN_VERSION.tar.xz
+
+# Keep only required includes/libraries/binaries for a minimal CI/CD Vulkan SDK image.
+RUN mkdir -p /minimal-sdk/bin /minimal-sdk/lib /minimal-sdk/include && \
+    cp    ./$VULKAN_VERSION/x86_64/bin/glslc                 /minimal-sdk/bin && \
+    cp -r ./$VULKAN_VERSION/x86_64/include                   /minimal-sdk     && \
+    cp    ./$VULKAN_VERSION/x86_64/lib/libshaderc_shared.so* /minimal-sdk/lib && \
+    cp    ./$VULKAN_VERSION/x86_64/lib/libvulkan.so*         /minimal-sdk/lib
+
+# # Install Vulkan SDK.
+# ## Copy and extract the vulkan sdk into the image.
+# COPY vulkansdk-linux-x86_64-$VULKAN_VERSION.tar.xz .
+# RUN mkdir -p ./vulkan && \
+#     tar -xf ./vulkansdk-linux-x86_64-$VULKAN_VERSION.tar.xz -C ./vulkan && \
+#     rm ./vulkansdk-linux-x86_64-$VULKAN_VERSION.tar.xz
+
+
+# Stage 2: Final Vulkan image.
+FROM debian:trixie-slim
 LABEL description="Dockerfile for preparing a Vulkan image used in CI/CD."
 
 # Set environment variables.
 ENV DEBIAN_FRONTEND=noninteractive
 ENV WORKFLOW_USER=runner
-ENV VULKAN_VERSION=1.4.321.1
 
 # Update and install packages.
-RUN apt update && apt install -y \
-    vulkan-tools \
-    libvulkan-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy in the source code.
-# COPY src ./src
-# EXPOSE 8080
+RUN apt update && apt install -y mesa-vulkan-drivers && rm -rf /var/lib/apt/lists/*
+RUN useradd -m -u 1001 $WORKFLOW_USER
 
 # Create a non-root user and working directory.
-RUN useradd -m -u 1001 $WORKFLOW_USER \
-    && mkdir -p /home/$WORKFLOW_USER/vulkan-app \
-    && chown -R $WORKFLOW_USER /home/$WORKFLOW_USER/vulkan-app
-
 USER $WORKFLOW_USER
 WORKDIR /home/$WORKFLOW_USER/vulkan-app
 
-# Install Vulkan SDK
+# Copy only minimal Vulkan SDK.
+COPY --from=builder /minimal-sdk /home/$WORKFLOW_USER/vulkan-sdk
 
-# TODO: Fix local paths, copy tar into docker folder? How to manage GIT, maybe git LFS?
-# Copy and extract the vulkan sdk into the image.
-COPY vulkansdk-linux-x86_64-$VULKAN_VERSION.tar.xz .
-RUN mkdir -p ~/vulkan && \
-    tar -xf ./vulkansdk-linux-x86_64-$VULKAN_VERSION.tar.xz -C ./vulkan && \
-    rm ./vulkansdk-linux-x86_64-$VULKAN_VERSION.tar.xz
+# Strip the Vulkan SDK from unnecessary files to minimize the image size.
+# ENV VULKAN_x64_DIR=./vulkan/$VULKAN_VERSION/x86_64
+# ENV VULKAN_BIN_DIR=$VULKAN_x64_DIR/bin
+# ENV VULKAN_LIB_DIR=$VULKAN_x64_DIR/lib
 
-ENV VULKAN_SDK=/home/$WORKFLOW_USER/vulkan-app/vulkan/$VULKAN_VERSION/x86_64
+# RUN cp $VULKAN_BIN_DIR/glslc $VULKAN_x64_DIR && \
+#     rm -rf $VULKAN_BIN_DIR/* && \
+#     mv $VULKAN_x64_DIR/glslc $VULKAN_BIN_DIR
+# RUN rm -f \
+#     $VULKAN_LIB_DIR/libVkLayer_*.so \
+#     $VULKAN_LIB_DIR/libSPIRV*.so* \
+#     $VULKAN_LIB_DIR/libclang*.* \
+#     $VULKAN_LIB_DIR/libLLVM*.* \
+#     $VULKAN_LIB_DIR/libglslang*.* \
+#     $VULKAN_LIB_DIR/libslang*.* \
+#     $VULKAN_LIB_DIR/libdx*.* \
+#     lib/libdxc*.*
+
+## Set the Vulkan SDK environment variables.
+ENV VULKAN_SDK=/home/$WORKFLOW_USER/vulkan-sdk
 ENV PATH=$VULKAN_SDK/bin:$PATH
-ENV LD_LIBRARY_PATH=$VULKAN_SDK/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
-ENV VK_LAYER_PATH=$VULKAN_SDK/share/vulkan/explicit_layer.d
+ENV LD_LIBRARY_PATH=$VULKAN_SDK/lib
 ENV PKG_CONFIG_PATH=$VULKAN_SDK/lib/pkgconfig/
+# ENV VULKAN_SDK=/home/$WORKFLOW_USER/vulkan-app/vulkan/$VULKAN_VERSION/x86_64
+# ENV PATH=$VULKAN_SDK/bin:$PATH
+# ENV LD_LIBRARY_PATH=$VULKAN_SDK/lib
+# ENV VK_LAYER_PATH=$VULKAN_SDK/share/vulkan/explicit_layer.d
+# ENV PKG_CONFIG_PATH=$VULKAN_SDK/lib/pkgconfig/
 
 CMD ["bash"]

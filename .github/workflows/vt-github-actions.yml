@@ -6,42 +6,65 @@ on:
     branches:
       - develop
       - 'feature/**'
+      - 'feat/**'
   pull_request:
     branches:
       - develop
 
 jobs:
-  Ubuntu-latest-CI:
-    if: false
-    name: Ubuntu-CI
+  linux-ci:
+    name: Linux CI
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/znojse/vulkan-ci:1.4.321.1-trixie-slim
+      options: --user root
     steps:
       - name: Check out latest commit from branch.
         uses: actions/checkout@v5
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
+          ref: "${{ github.event_name == 'pull_request' ? github.head_ref : github.ref_name }}"
 
       - name: Print checked-out branch
         run: git branch --show-current
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Cache pip packages.
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install package dependencies.
+        run: |
+          set -e
+          apt update && apt install -y pkg-config clang ninja-build
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
       - name: Lint, build and test the project.
         run: |
-          clear &&
-          rm -rf build/* &&
-          conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Debug . &&
-          conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Release . &&
-          cmake --workflow --preset=vtDefaultLint &&
+          set -e
+          conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Debug .
+          conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Release .
+          cmake --workflow --preset=vtDefaultLint
           cmake --workflow --preset=vtDefaultAll
       - run: echo "This job's status is ${{ job.status }}."
-  
-  Windows-latest-CI:
-    name: Windows-CI
+
+  windows-ci:
+    if: false
+    name: Windows CI
     runs-on: windows-latest
     steps:
       - name: Check out latest commit from branch.
         uses: actions/checkout@v5
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
+          ref: "${{ github.event_name == 'pull_request' ? github.head_ref : github.ref_name }}"
 
       - name: Print checked-out branch
         run: git branch --show-current
@@ -55,24 +78,19 @@ jobs:
       #   shell: pwsh
 
       - name: Set up Python 3.13
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.13'
 
-      - name: Create virtual environment and install dependencies.
+      - name: Install package dependencies.
         run: |
-          python -m venv venv
-          .\venv\Scripts\Activate.ps1
-          python -c "import sys; print(sys.executable)"
-          pip install --upgrade pip && pip install conan
-          pip install --upgrade pip && pip install cmake
-          pip list
+          $ErrorActionPreference = 'Stop'
+          pip install --upgrade pip && pip install -r requirements.txt
         shell: pwsh
 
       - name: Build and test the project.
         run: |
-          .\venv\Scripts\Activate.ps1
-          if (Test-Path -LiteralPath build/) { Remove-Item build/* -Recurse -Force }
+          $ErrorActionPreference = 'Stop'
           conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_type=Debug .
           conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_type=Release .
           cmake --workflow --preset=vtMSVCAll
