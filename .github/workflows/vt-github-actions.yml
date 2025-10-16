@@ -19,14 +19,6 @@ jobs:
       image: ghcr.io/znojse/vulkan-ci:1.4.321.1-trixie-slim
       options: --user root
     steps:
-      - name: Check out latest commit from branch.
-        uses: actions/checkout@v5
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
-
-      - name: Print checked-out branch
-        run: git branch --show-current
-
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
@@ -43,9 +35,17 @@ jobs:
       - name: Install package dependencies.
         run: |
           set -e
-          apt update && apt install -y pkg-config clang ninja-build
+          apt update && apt install -y pkg-config clang ninja-build git
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: Check out latest commit from branch.
+        uses: actions/checkout@v5
+        with:
+          ref: "${{ github.head_ref || github.ref_name }}"
+
+      - name: Print checked-out branch
+        run: git branch --show-current
 
       - name: Lint, build and test the project.
         run: |
@@ -64,7 +64,7 @@ jobs:
       - name: Check out latest commit from branch.
         uses: actions/checkout@v5
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
+          ref: "${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}"
 
       - name: Print checked-out branch
         run: git branch --show-current
