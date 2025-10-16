@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/znojse/vulkan-ci:1.4.321.1-trixie-slim
-      options: --user root
+      # options: --user root
     steps:
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -27,9 +27,9 @@ jobs:
       - name: Install package dependencies.
         run: |
           set -e
-          apt update && apt install -y pkg-config clang ninja-build git
-          python -m pip install --upgrade pip
-          python -m pip install conan cmake
+          sudo apt update && sudo apt install -y pkg-config clang ninja-build git
+          python -m pip install --upgrade pip --no-cache-dir --root-user-action=ignore
+          python -m pip install conan cmake --no-cache-dir --root-user-action=ignore
 
       - name: Check out latest commit from branch.
         uses: actions/checkout@v5
@@ -77,7 +77,7 @@ jobs:
       - name: Install package dependencies.
         run: |
           $ErrorActionPreference = 'Stop'
-          pip install --upgrade pip && pip install conan cmake
+          pip install --upgrade pip && pip install conan cmake --no-cache-dir --root-user-action=ignore
         shell: pwsh
 
       - name: Build and test the project.
