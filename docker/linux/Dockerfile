@@ -26,7 +26,6 @@ LABEL description="Dockerfile for preparing a Vulkan image used in CI/CD."
 ENV DEBIAN_FRONTEND=noninteractive
 ENV WORKFLOW_USER=runner
 ENV HOME=/home/$WORKFLOW_USER
-ENV CONAN_USER_HOME=$HOME/.conan2
 
 # Update and install packages as well as create a non-root user.
 RUN apt-get update && apt-get install -y --no-install-recommends \
