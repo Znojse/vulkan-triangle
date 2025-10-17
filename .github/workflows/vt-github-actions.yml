@@ -19,6 +19,8 @@ jobs:
       image: ghcr.io/znojse/vulkan-ci:1.4.321.1-trixie-slim
     steps:
       - name: Lint, build and test the project.
+        env:
+          CONAN_USER_HOME: /home/runner/.conan2
         run: |
           set -e
           conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Debug .
