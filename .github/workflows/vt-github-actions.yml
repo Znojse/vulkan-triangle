@@ -21,7 +21,7 @@ jobs:
       - name: Check out latest commit from branch.
         uses: actions/checkout@v5
         with:
-          path: ${{ $WORKFLOW_HOME }}
+          path: ${{ env.WORKFLOW_HOME }}
           ref: ${{ github.head_ref || github.ref_name }}
 
       # - name: Check out latest commit from branch.
@@ -31,7 +31,7 @@ jobs:
       - name: Lint, build and test the project.
         run: |
           set -e
-          cd $WORKFLOW_HOME
+          cd ${{ env.WORKFLOW_HOME }}
           conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Debug .
           conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Release .
           cmake --workflow --preset=vtDefaultLint
