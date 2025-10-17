@@ -17,25 +17,11 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/znojse/vulkan-ci:1.4.321.1-trixie-slim
-      options: --user root -e CONAN_SYSREQUIRES_SUDO=0
     steps:
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.13'
-
-      - name: Install package dependencies.
-        run: |
-          set -e
-          apt-get update && apt-get install -y pkg-config clang ninja-build git
-          python -m pip install --upgrade pip --no-cache-dir --root-user-action=ignore
-          python -m pip install conan cmake --no-cache-dir --root-user-action=ignore
-
-      - name: Check out latest commit from branch.
-        uses: actions/checkout@v5
-        with:
-          ref: "${{ github.head_ref || github.ref_name }}"
-
+      # - name: Check out latest commit from branch.
+      #   uses: actions/checkout@v5
+      #   with:
+      #     ref: "${{ github.head_ref || github.ref_name }}"
       - name: Print checked-out branch
         run: |
           git config --global --add safe.directory /__w/vulkan-triangle/vulkan-triangle
