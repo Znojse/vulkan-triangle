@@ -25,33 +25,36 @@ LABEL description="Dockerfile for preparing a Vulkan image used in CI/CD."
 # Set environment variables.
 ENV DEBIAN_FRONTEND=noninteractive
 ENV WORKFLOW_USER=runner
+ENV HOME=/home/$WORKFLOW_USER
 
-# Update and install packages.
+# Update and install packages as well as create a non-root user.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    adduser \
-    python3 \
-    python3-pip \
-    python-is-python3 \
-    pkgconf \
-    ninja-build && \
+        adduser \
+        python3 \
+        python3-pip \
+        python-is-python3 \
+        pkgconf \
+        ninja-build && \
     adduser --disabled-password --gecos "" $WORKFLOW_USER && \
-    apt-get purge -y --auto-remove adduser && \
+    apt-get purge -y --no-install-recommends --auto-remove adduser && \
     rm -rf /var/lib/apt/lists/* && \
-    python -m pip install --cache-dir=/tmp/pipcache \
+    python -m pip install \
         conan==2.19.1 \
         cmake>=3.29 \
         --no-cache-dir --break-system-packages && \
-    rm -rf /root/.cache/pip
+    rm -rf /root/.cache/pip && \
+    mkdir -p $HOME && \
+    chown -R $WORKFLOW_USER:$WORKFLOW_USER $HOME
 
-# Create a non-root user and working directory.
+# Change to a non-root user and set working directory.
 USER $WORKFLOW_USER
-WORKDIR /home/$WORKFLOW_USER/vulkan-app
+WORKDIR $HOME/vulkan-app
 
 # Copy only minimal Vulkan SDK.
-COPY --chown=$WORKFLOW_USER --from=builder /minimal-sdk /home/$WORKFLOW_USER/vulkan-sdk
+COPY --chown=$WORKFLOW_USER --from=builder /minimal-sdk $HOME/vulkan-sdk
 
 # Set the Vulkan SDK environment variables.
-ENV VULKAN_SDK=/home/$WORKFLOW_USER/vulkan-sdk
+ENV VULKAN_SDK=$HOME/vulkan-sdk
 ENV PATH=$VULKAN_SDK/bin:$PATH
 ENV LD_LIBRARY_PATH=$VULKAN_SDK/lib
 ENV PKG_CONFIG_PATH=$VULKAN_SDK/lib/pkgconfig/
@@ -84,7 +87,7 @@ HEALTHCHECK CMD [ "sh", "-c", 'if [ ! -x "$VULKAN_SDK/bin/glslc" ]; then echo "g
 #     $VULKAN_LIB_DIR/libdx*.* \
 #     lib/libdxc*.*
 
-# ENV VULKAN_SDK=/home/$WORKFLOW_USER/vulkan-app/vulkan/$VULKAN_VERSION/x86_64
+# ENV VULKAN_SDK=$HOME/vulkan-app/vulkan/$VULKAN_VERSION/x86_64
 # ENV PATH=$VULKAN_SDK/bin:$PATH
 # ENV LD_LIBRARY_PATH=$VULKAN_SDK/lib
 # ENV VK_LAYER_PATH=$VULKAN_SDK/share/vulkan/explicit_layer.d
