@@ -21,7 +21,7 @@ jobs:
       - name: Check out latest commit from branch.
         uses: actions/checkout@v5
         with:
-          path: ${{ env.$WORKFLOW_HOME }}
+          path: ${{ $WORKFLOW_HOME }}
           ref: ${{ github.head_ref || github.ref_name }}
 
       # - name: Check out latest commit from branch.
