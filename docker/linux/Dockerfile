@@ -45,7 +45,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         --no-cache-dir --break-system-packages && \
     rm -rf /root/.cache/pip && \
     mkdir -p $HOME && \
-    chown -R $WORKFLOW_USER:$WORKFLOW_USER $HOME
+    chown -R $WORKFLOW_USER:$WORKFLOW_USER $HOME && \
+    mkdir -p /github/home /__w /__t /__e /__a && \
+    chown -R $WORKFLOW_USER:$WORKFLOW_USER /github /__w /__t /__e /__a
 
 # Change to a non-root user and set working directory.
 USER $WORKFLOW_USER
