@@ -18,6 +18,11 @@ jobs:
     container:
       image: ghcr.io/znojse/vulkan-ci:1.4.321.1-trixie-slim
     steps:
+      - name: Check out latest commit from branch.
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+
       - name: Lint, build and test the project.
         run: |
           set -e
@@ -25,6 +30,7 @@ jobs:
           conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Release .
           cmake --workflow --preset=vtDefaultLint
           cmake --workflow --preset=vtDefaultAll
+
       - run: echo "This job's status is ${{ job.status }}."
 
   windows-ci:
