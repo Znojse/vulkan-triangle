@@ -19,7 +19,7 @@ jobs:
     name: Linux CI
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/znojse/vulkan-ci:1.4.321.1-trixie-slim
+      image: ghcr.io/znojse/vulkan-ci:1.4.321.1-trixie-slim-0.1.0
     steps:
       - name: Check out latest commit from branch.
         run: |
