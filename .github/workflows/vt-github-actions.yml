@@ -23,6 +23,7 @@ jobs:
     steps:
       - name: Check out latest commit from branch.
         run: |
+          cd /home/runner/
           git clone --depth 1 --no-checkout https://github.com/${{ github.repository }} vulkan-triangle
           cd vulkan-triangle
           git fetch origin ${{ github.ref }}
