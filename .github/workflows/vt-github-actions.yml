@@ -27,6 +27,7 @@ jobs:
         run: |
           set -e
           cd /home/runner/vulkan-triangle
+          ls -lah
           conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Debug .
           conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Release .
           cmake --workflow --preset=vtDefaultLint
