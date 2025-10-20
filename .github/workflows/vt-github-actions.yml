@@ -26,7 +26,9 @@ jobs:
 
       - name: Check out latest commit from branch.
         run: |
-          git clone --depth 1 --branch ${{ github.ref_name }} https://github.com/${{ github.repository }} .
+          cd /home/runner/
+          git clone --depth 1 --branch ${{ github.ref_name }} https://github.com/${{ github.repository }} vulkan-triangle
+          cd vulkan-triangle
 
       - name: Lint, build and test the project.
         run: |
