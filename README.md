@@ -1,3 +1,5 @@
+[![CI](https://github.com/Znojse/vulkan-triangle/actions/workflows/vt-github-actions.yml/badge.svg)](https://github.com/Znojse/vulkan-triangle/actions)
+
 # Table of Contents
 1. [Vulkan Triangle](#vulkan-triangle)
     1. [Project Structure](#project-structure)
@@ -25,7 +27,7 @@
 
 # Vulkan Triangle
 An application generating a RGB triangle within a window using Vulkan and following this [vulkan-tutorial](https://vulkan-tutorial.com/).
-The project is developed in C++ using the Vulkan API and setting up the the project structure with Conan, CMake and CMakePresets.
+The project is developed in C++ using the Vulkan API and setting up the project structure with Conan, CMake and CMakePresets.
 
 ## Project Structure
 ```
@@ -60,8 +62,8 @@ vulkan-triangle
 |    |    main.cpp
 |    |
 |    ----shaders                           # Shaders determine how surfaces and objects appear in a digital scene.
-|    |    |    trinagle.frag
-|    |    |    trinagle.vert
+|    |    |    triangle.frag
+|    |    |    triangle.vert
 |    |    |
 |    |    |----cmake
 |    |         |    CompileShaders.cmake   # CMake module to compile the shaders during application compilation.
@@ -79,7 +81,7 @@ The projects assumes that the [Vulkan SDK](https://www.lunarg.com/vulkan-sdk/) i
         * `mkdir ~/vulkan`.
     3. Extract the `tar.xz` into the vulkan directory:
         1. `sudo apt install xz-utils`
-        2. `sudo tar -xvf <path>/vulkansdk-linux-x86_64-<1.x.yy.z>.tar.xz -C ~/vulkan`
+        2. `tar -xf <path>/vulkansdk-linux-x86_64-<1.x.yy.z>.tar.xz -C ~/vulkan`
 2. [Setup](https://vulkan.lunarg.com/doc/sdk/1.4.321.1/linux/getting_started.html) Vulkan environment variables:
     * Source the vulkan `setup-env` to the current shell, or into e.g. the `.profile` file for every session.
         * `source ~/vulkan/1.x.yy.z/setup-env.sh`
@@ -174,7 +176,7 @@ Used to simplify and standardize the process of building and testing the project
     * Runs the clang-tidy linter and builds the project for `Debug`.
 
 ## Instructions
-1. Run `conan install` with prefered profile for both `Debug` and `Release`.
+1. Run `conan install` with preferred profile for both `Debug` and `Release`.
 2. Run cmake with preferred workflow preset.
 
 ### Compile Examples
@@ -235,6 +237,27 @@ cmake --workflow --preset=vtDefaultAll
 
 # Development
 Tools used to simplify the development.
+
+## CI/CD
+This project uses GitHub Actions to automatically lint, build, and run unit tests when code is pushed or a pull request is opened. The CI workflow is defined in `.github\workflows\vt-github-actions.yml` and currently supports the following environments:
+* Linux
+  - Uses a custom Debian-based Docker image containing:
+    - A stripped-down Vulkan SDK (1.4.321.1)
+    - Build tools (clang-tidy, cmake, conan, ninja, etc.)
+    - X11 and OpenGL development libraries
+* Windows
+    - WIP
+
+### Docker
+The image is used in the Linux CI job and is published to [GHCR (GitHub Container Registry)](https://github.com/Znojse/vulkan-triangle/pkgs/container/vulkan-ci).
+Build and push the Docker image:
+1. Update the `Dockerfile` as needed.
+2. Login to GHCR: `docker login ghcr.io -u <username>`
+3. Build the image: `docker build -t vulkan-ci:1.4.321.1-trixie-slim-<VERSION> .`.
+4. Tag the image: `docker tag vulkan-ci:1.4.321.1-trixie-slim-<VERSION> ghcr.io/<username>/vulkan-ci:1.4.321.1-trixie-slim-<VERSION>`.
+5. Push the image: `docker push ghcr.io/<username>/vulkan-ci:1.4.321.1-trixie-slim-<VERSION>`.
+
+The image and tag follows this convention: `<IMAGE_NAME>:<VULKAN_VERSION>-<DEBIAN_BASE>-<IMAGE_VERSION>`. For example: `vulkan-ci:1.4.321.1-trixie-slim-0.1.0`.
 
 ## Linting
 Linting is the process of automatically checking your source code for potential errors, bugs, stylistic issues, or suspicious constructs. A linter is a tool that analyzes your code and helps you catch problems early, improve code quality, and maintain consistent coding style.
