@@ -18,22 +18,15 @@ jobs:
     container:
       image: ghcr.io/znojse/vulkan-ci:1.4.321.1-trixie-slim
     steps:
-      # - name: Check out latest commit from branch.
-      #   uses: actions/checkout@v5
-      #   with:
-      #     path: ${{ env.WORKFLOW_HOME }}
-      #     ref: ${{ github.head_ref || github.ref_name }}
-
       - name: Check out latest commit from branch.
         run: |
           cd /home/runner/
           git clone --depth 1 --branch ${{ github.ref_name }} https://github.com/${{ github.repository }} vulkan-triangle
-          cd vulkan-triangle
 
       - name: Lint, build and test the project.
         run: |
           set -e
-          cd ${{ env.WORKFLOW_HOME }}
+          cd /home/runner/vulkan-triangle
           conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Debug .
           conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Release .
           cmake --workflow --preset=vtDefaultLint
