@@ -1,3 +1,4 @@
+# Stage 1: Prepare the minimal Vulkan SDK.
 FROM debian:trixie-slim AS builder
 
 # Set environment variables.
