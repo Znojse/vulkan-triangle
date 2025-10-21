@@ -242,13 +242,13 @@ Tools used to simplify the development.
 
 ## CI/CD
 This project uses GitHub Actions to automatically lint, build, and run unit tests when code is pushed or a pull request is opened. The CI workflow is defined in `.github\workflows\vt-github-actions.yml` and currently supports the following environments:
-* Linux
+* Linux-runner
   - Uses a custom Debian-based Docker image containing:
     - A stripped-down Vulkan SDK (1.4.321.1)
     - Build tools (clang-tidy, cmake, conan, ninja, etc.)
     - X11 and OpenGL development libraries
-* Windows
-    - WIP
+* Windows-runner, self-hosted
+    - Won't do since it is only recommended for private repos.
 
 ### Docker
 The image is used in the Linux CI job and is published to [GHCR (GitHub Container Registry)](https://github.com/Znojse/vulkan-triangle/pkgs/container/vulkan-ci).

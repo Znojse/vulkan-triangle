@@ -1,4 +1,4 @@
-name: Vulkan Triangle Lint-Build-Test
+name: Vulkan Triangle - Lint-Build-Test
 run-name: CI by ${{ github.actor }} on ${{ github.ref_name }}.
 
 on:
@@ -33,51 +33,9 @@ jobs:
         run: |
           set -e
           cd /home/runner/vulkan-triangle
-          ls -lah
           conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Debug .
           conan install --profile:a ./conan-profiles/linux64-gcc --build=missing -s build_type=Release .
           cmake --workflow --preset=vtDefaultLint
           cmake --workflow --preset=vtDefaultAll
 
-      - run: echo "This job's status is ${{ job.status }}."
-
-  windows-ci:
-    if: false
-    name: Windows CI
-    runs-on: windows-latest
-    steps:
-      - name: Check out latest commit from branch.
-        uses: actions/checkout@v5
-        with:
-          ref: "${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}"
-
-      - name: Print checked-out branch
-        run: git branch --show-current
-
-      # - name: Install Vulkan SDK
-      #   run: |
-      #     $version = "1.4.321.1"
-      #     $url = "https://sdk.lunarg.com/sdk/download/1.4.321.1/windows/VulkanSDK-1.4.321.1-Installer.exe?Human=true"
-      #     Invoke-WebRequest -Uri $url -OutFile VulkanSDKInstaller.exe
-      #     Start-Process -FilePath .\VulkanSDKInstaller.exe -ArgumentList "--accept-licenses --default-answer --confirm-command install" -Wait
-      #   shell: pwsh
-
-      - name: Set up Python 3.13
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.13'
-
-      - name: Install package dependencies.
-        run: |
-          $ErrorActionPreference = 'Stop'
-          pip install --upgrade pip && pip install conan cmake --no-cache-dir --root-user-action=ignore
-        shell: pwsh
-
-      - name: Build and test the project.
-        run: |
-          $ErrorActionPreference = 'Stop'
-          conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_type=Debug .
-          conan install --profile:a ./conan-profiles/win64-msvc --build=missing -s build_type=Release .
-          cmake --workflow --preset=vtMSVCAll
-        shell: pwsh
       - run: echo "This job's status is ${{ job.status }}."
