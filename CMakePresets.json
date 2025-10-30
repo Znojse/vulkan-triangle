@@ -13,6 +13,7 @@
             "inherits": "conan-default",
             "hidden": true,
             "binaryDir": "${sourceDir}/build/vulkan-triangle",
+            "installDir": "${sourceDir}/install",
             "toolchainFile": "${sourceDir}/build/generators/conan_toolchain.cmake",
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": { "type": "BOOL",   "value": true },

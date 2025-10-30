@@ -1,0 +1,6 @@
+#pragma once
+
+#include <string_view>
+
+inline const std::string_view shaderLocalDevDir { "@SHADER_DIR@" };
+inline const std::string_view shaderInstallDir  { "@SHADER_INSTALL_DIR@" };

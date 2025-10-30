@@ -564,7 +564,7 @@ void HelloTriangleApplication::CreateRenderPass() {
 }
 
 void HelloTriangleApplication::CreateGraphicsPipeline() {
-    const std::filesystem::path shaderPath     = std::filesystem::current_path() += std::filesystem::path("/build/vulkan-triangle/src");
+    const std::filesystem::path shaderPath     = utilities::FindShaderDir();
     const auto                  vertShaderCode = utilities::ReadBinaryFile(std::filesystem::path(shaderPath / "triangle.vert.spv").string());
     const auto                  fragShaderCode = utilities::ReadBinaryFile(std::filesystem::path(shaderPath / "triangle.frag.spv").string());
 

@@ -3,11 +3,14 @@
 #include <vulkan/vulkan.h>
 
 #include <cstdint>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <string>
 #include <vector>
+
+#include "shader-config.hpp"
 
 namespace vt::utilities {
 
@@ -49,6 +52,25 @@ static auto ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& available
 
     // Fallback, only the VK_PRESENT_MODE_FIFO_KHR mode is guaranteed to be available.
     return VK_PRESENT_MODE_FIFO_KHR;
+}
+
+static auto FindShaderDir() -> std::filesystem::path {
+    // Check for the shader install directory.
+    std::filesystem::path installed = std::filesystem::path(shaderInstallDir);
+    if (std::filesystem::exists(installed)) {
+        return installed;
+    }
+
+    // Check for the shader local dev directory.
+    std::filesystem::path local = std::filesystem::path(shaderLocalDevDir);
+    if (std::filesystem::exists(local)) {
+        return local;
+    }
+
+    std::stringstream errorMsg;
+    errorMsg << "Utilities::FindShaderDir: Failed to locate shader directory.\n" <<
+                "Checked:\n\t" << shaderLocalDevDir << "\n\t" << shaderInstallDir << "\n";
+    throw std::runtime_error(errorMsg.str());
 }
 
 }  // namespace vt::utilities

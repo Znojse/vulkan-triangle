@@ -1,6 +1,10 @@
 function(add_shaders TARGET_NAME)
   set(SHADER_SOURCE_FILES ${ARGN}) # The rest of arguments to this function will be assigned as shader source files
 
+  if (NOT DEFINED SHADER_DIR)
+    set(SHADER_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+  endif()
+
   message(STATUS "Compiling shaders...")
 
   # Validate that source files have been passed.
@@ -20,10 +24,10 @@ function(add_shaders TARGET_NAME)
     list(APPEND SHADER_COMMANDS Vulkan::glslc)
     list(APPEND SHADER_COMMANDS "${SHADER_SOURCE}")
     list(APPEND SHADER_COMMANDS "-o")
-    list(APPEND SHADER_COMMANDS "${CMAKE_CURRENT_BINARY_DIR}/${SHADER_NAME}.spv")
+    list(APPEND SHADER_COMMANDS "${SHADER_DIR}/${SHADER_NAME}.spv")
 
     # Add product
-    list(APPEND SHADER_PRODUCTS "${CMAKE_CURRENT_BINARY_DIR}/${SHADER_NAME}.spv")
+    list(APPEND SHADER_PRODUCTS "${SHADER_DIR}/${SHADER_NAME}.spv")
 
   endforeach()
 
